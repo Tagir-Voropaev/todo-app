@@ -10,7 +10,7 @@ const start =  async () => {
     try{
         await sequelize.authenticate()
         await sequelize.sync()
-        app.listen(PORT, () => console.log(`HAHAHAHA port ${PORT}`))
+        app.listen(PORT, () => console.log(`Listening port ${PORT}`))
     } catch (e) {
         console.log(e)
     }
