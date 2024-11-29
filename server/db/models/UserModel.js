@@ -14,7 +14,7 @@ const UserModel = sequelize.define('UserModel',
         allowNull: false,
         unique: true
     },
-    password: {
+    passwordHash: {
         type: DataTypes.STRING,
         allowNull: false
     }
@@ -26,9 +26,7 @@ const UserModel = sequelize.define('UserModel',
     }
 );
 
-(async () => {
-    await sequelize.sync({force:true})
-})()
+
 
 
 
