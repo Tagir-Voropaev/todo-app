@@ -1,38 +1,47 @@
 import express from 'express'
 import sequelize from './db/database.js'
-import authorization from './modules/authorization.js';
-import registration from './modules/registration.js';
-
-
+import checkAuth from './utils/checkAuth.js';
+import { authValidation, registerValidation, taskCreateValidation } from './validations/validations.js';
+import { authorization, registration, getMe } from './controllers/UserController.js';
+import { createTask } from './controllers/TaskController.js';
 const PORT = 5000;
 
+
+//Проверка подключения бд
 try {
-    (async () => {
-        await sequelize.sync({force: true})
-    })()
+    (async () => { await sequelize.sync({ force: true }) })() //Dev-mode: пересоздание таблицы при запуске сервера
     await sequelize.authenticate()
     console.log('DB is OK')
-  } catch (e) {
+} catch (e) {
     console.log('DB is BAD ', e)
-  }
+}
+
+//Инициализация сервера
 const app = express();
 
-
+//Формат чтения
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send("Hello")
-})
-app.get('/auth/register', (req, res) =>{
-    res.send("auth/register")
-})
 
-//Авторизация
-app.post('/auth/login',  authorization)
+app.get('/', (req, res) => { res.send("Hello") })
 
 
-app.post('/auth/register', registration)
+// ======================= AUTH ========================
+app.get('/auth/login', (req, res) => { res.send("auth/login") })
+app.get('/auth/register', (req, res) => { res.send("auth/register") })
+app.get('/auth/me', checkAuth, getMe)
 
+app.post('/auth/login', authValidation, authorization)
+app.post('/auth/register', registerValidation, registration)
+
+// ======================= TASKS ========================
+app.get('/tasks', (req, res) => { res.send("tasks") })
+app.post('/tasks',checkAuth , taskCreateValidation, createTask)
+// app.delete('/tasks', (req, res) => {})
+// app.patch('/tasks', (req, res) => {})
+
+
+//Запуск сервера
 app.listen(PORT, (err) => {
     if (err) {
         return console.log(err)
