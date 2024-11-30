@@ -12,7 +12,7 @@ const UserModel = sequelize.define('UserModel',
         username: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true
+            unique: false
         },
         passwordHash: {
             type: DataTypes.STRING,

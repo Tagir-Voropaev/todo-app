@@ -22,7 +22,7 @@ const TaskModel = sequelize.define('TaskModel',
     user: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        unique: true,
+        // unique: true,
     }
     },
     {
