@@ -1,6 +1,7 @@
 import express from 'express'
 import sequelize from './db/database.js'
 import checkAuth from './utils/checkAuth.js';
+import cors from 'cors'
 import validationError from './utils/validationError.js';
 import { authValidation, registerValidation, taskCreateValidation } from './validations/validations.js';
 import { authorization, registration, getMe } from './controllers/UserController.js';
@@ -25,21 +26,21 @@ const app = express();
 
 //Формат чтения
 app.use(express.json());
-
+app.use(cors());
 
 app.get('/', (req, res) => { res.send("Hello") })
 
 
 // ======================= AUTH ========================
-app.get('/auth/login', (req, res) => { res.send("auth/login") })
-app.get('/auth/register', (req, res) => { res.send("auth/register") })
+app.get('/auth/login', (req, res) => { res.json({message: "логин"}) })
+app.get('/auth/register', (req, res) => { res.json({message: "регистрация"}) })
 app.get('/auth/me', checkAuth, getMe)
 
 app.post('/auth/login', authValidation, validationError, authorization)
 app.post('/auth/register', registerValidation, validationError, registration)
 
 // ======================= TASKS ========================
-app.get('/tasks', checkAuth, getAllTasks)
+app.get('/tasks', getAllTasks)
 app.post('/tasks', checkAuth, taskCreateValidation, validationError, createTask)
 app.delete('/tasks', checkAuth, deleteTask)
 app.patch('/tasks', checkAuth, taskCreateValidation, validationError, editTask)

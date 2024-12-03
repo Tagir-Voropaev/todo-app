@@ -23,7 +23,8 @@ export const createTask = async(req,res) => {
 
 export const getAllTasks = async(req, res) => {
     try {
-        const tasks = await TaskModel.findAll({ where: { user: req.userId } })
+        // const tasks = await TaskModel.findAll({ where: { user: req.userId } })// Получение задач определенного пользователя
+        const tasks = await TaskModel.findAll()// Получение задач определенного пользователя
         res.json(tasks);
     } catch (error) {
         console.log(error)

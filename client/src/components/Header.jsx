@@ -1,13 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import '../static/css/header.css'
-import whitelogo from '../static/images/whitelogo.png'
-import whitebluelogo from '../static/images/whiteblue.png'
+// import whitelogo from '../static/images/whitelogo.png'
+// import whitebluelogo from '../static/images/whiteblue.png'
 import bluelogo from '../static/images/blue.png'
-import blacklogo from '../static/images/blacklogo.png'
+// import blacklogo from '../static/images/blacklogo.png'
 
 // import viollogo from '../images/viollogo.png'
-
 
 
 const Header = () => {
@@ -16,12 +15,18 @@ const Header = () => {
         <div className="header">
             <div className='header-nav'>
                 <div className="header-logo">
-                    <Link to="/" className='header-link'><img src={bluelogo} alt="" /></Link>
+                    <Link to="/"><img src={bluelogo} alt="" /></Link>
                 </div>
-                <div className="header-links">
-                    <Link to="/" className='header-link link-color'>Главная</Link>
-                    <Link to="/tasks" className='header-link link-color'>Задачи</Link>
-                </div>
+                <nav className="header-links">
+                    <div className='header-link'>
+                        <p className='header-link-item'>Задачи</p>
+                        <i className="header-link-item fa-solid fa-list-check"></i>
+                    </div>
+                    <div className='header-link'>
+                        <p className='header-link-item'>Скрипты</p>
+                        <i class="header-link-item fa-solid fa-list"></i>
+                    </div>
+                </nav>
                 <div className="header-side">
                     {isAuth ? (
                         <>
