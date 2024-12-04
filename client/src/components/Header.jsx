@@ -10,7 +10,7 @@ import bluelogo from '../static/images/blue.png'
 
 
 const Header = () => {
-    let isAuth = true
+    let isAuth = false
     return (
         <div className="header">
             <div className='header-nav'>
@@ -18,29 +18,21 @@ const Header = () => {
                     <Link to="/"><img src={bluelogo} alt="" /></Link>
                 </div>
                 <nav className="header-links">
-                    <div className='header-link'>
+                    <Link to="/" className='header-link'>
+                        <p className='header-link-item'>Главная</p>
+                        <i className="header-link-item fa-solid fa-house"></i>
+                    </Link>
+                    <Link to="/tasks" className='header-link'>
                         <p className='header-link-item'>Задачи</p>
                         <i className="header-link-item fa-solid fa-list-check"></i>
-                    </div>
-                    <div className='header-link'>
+                    </Link>
+                    <Link to="/scripts" className='header-link'>
                         <p className='header-link-item'>Скрипты</p>
-                        <i class="header-link-item fa-solid fa-list"></i>
-                    </div>
+                        <i className="header-link-item fa-solid fa-list"></i>
+                    </Link>
                 </nav>
                 <div className="header-side">
-                    {isAuth ? (
-                        <>
-                            <div className="header-auth">
-                                <button className='header-auth-elem header-logout'>Выйти</button>
-                            </div>
-                        </>) : (
-                        <>
-                            <div className="header-auth">
-                                <Link to="/auth" className='header-auth-elem header-login'>Войти</Link>
-                                <Link to="/registration" className='header-auth-elem header-reg'>Создать аккаунт</Link>
-                            </div>
-                        </>
-                    )}
+                   
                 </div>
             </div>
         </div>

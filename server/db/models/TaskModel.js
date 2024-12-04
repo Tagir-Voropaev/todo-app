@@ -15,10 +15,6 @@ const TaskModel = sequelize.define('TaskModel',
     datetask: {
         type: DataTypes.STRING,
     },
-    description: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
     user: {
         type: DataTypes.INTEGER,
         allowNull: false,

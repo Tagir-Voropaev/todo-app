@@ -48,8 +48,10 @@
     cursor: pointer;
     display: flex;
     justify-content: center;
+    background-color: #fff;
     align-items: center;
     border: 1px solid #61616176;
+    color: #000;
     border-radius: 5px;
     margin: auto 10px;
     width: 120px;

@@ -6,12 +6,20 @@
     font-family: Roboto;
 }
 body {
+    min-width: 480px;
     background-color: #f1f1f1;
 }
 a{
     text-decoration: none;
 }
-
+.App{
+}
+.content{
+    padding: 20px;
+}
+button, input{
+    outline: none;
+}
 /* 
 Цвета
 
