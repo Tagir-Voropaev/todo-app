@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { tasksReducer } from './tasksSlice'
+import tasksSlice from './tasksSlice'
 import { createTaskReducer } from './createTaskSlice'
+
 const index = configureStore({
     reducer: {
-        tasks: tasksReducer,
+        tasks: tasksSlice,
         createTask: createTaskReducer,
     }
 })

@@ -6,21 +6,32 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
     const { data } = await axios.get('/tasks');
     return data
 })
-
+// const filteredTasks = tasks.items.filter(task => {
+//     return task.title.toLowerCase().includes(searchValue.toLocaleLowerCase())
+// })
 
 const initialState = {
     tasks: {
         items: [],
         status: 'loading',
         error: false,
-    }
+    },
+    searchValue: '',
+    filtered: [],
 }
 
 
 const tasksSlice = createSlice({
     name: "todos",
     initialState,
-    reducers: {},
+    reducers: {
+        setSearchValue: (state, action) => {
+            state.searchValue = action.payload
+        },
+        setFilterSearch: (state, action) => {
+            state.filtered = action.payload
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchTasks.pending, (state) => {
@@ -34,10 +45,12 @@ const tasksSlice = createSlice({
             })
             .addCase(fetchTasks.rejected, (state) => {
                 state.tasks.items = [];
+
                 state.error = true;
                 state.tasks.status = "error";
             })
     }
 });
 
-export const tasksReducer = tasksSlice.reducer;
+export const { setSearchValue, setFilterSearch } = tasksSlice.actions
+export default tasksSlice.reducer;
