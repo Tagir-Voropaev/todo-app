@@ -41,8 +41,7 @@ export const deleteTask = async(req, res) => {
         
         const taskId = req.body.id
         await TaskModel.destroy({ where: { id: taskId } });
-        const tasks = await TaskModel.findAll({ where: { user: req.userId } });
-        res.json(tasks);
+        res.json(taskId);
     } catch (error) {
         console.log(error)
         res.status(404).json({

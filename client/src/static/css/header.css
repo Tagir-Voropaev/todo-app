@@ -9,6 +9,7 @@
 }
 
 .header-nav {
+    box-sizing: border-box;
     max-width: 1300px;
     padding: 0 10px;
     width: 100%;

@@ -1,10 +1,10 @@
-import {configureStore} from '@reduxjs/toolkit'
-import {tasksReducer} from './tasksSlice'
-import { windowsReducer } from './windowsSlice'
+import { configureStore } from '@reduxjs/toolkit'
+import { tasksReducer } from './tasksSlice'
+import { createTaskReducer } from './createTaskSlice'
 const index = configureStore({
     reducer: {
         tasks: tasksReducer,
-        windows: windowsReducer
+        createTask: createTaskReducer,
     }
 })
 
