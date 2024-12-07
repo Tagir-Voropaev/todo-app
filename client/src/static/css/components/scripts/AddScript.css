@@ -1,0 +1,41 @@
+.script-add-show {
+    position: relative;
+    box-sizing: border-box;
+    padding: 0 8px;
+    display: grid;
+    width: 90%;
+    border-radius: 20px;
+    grid-template-columns: 5fr 1fr;
+    grid-template-areas: "b e";
+    justify-items: center;
+    align-items: center;
+    height: 45px;
+    box-shadow: 0px 4px 8px 2px rgba(34, 60, 80, 0.2);
+}
+.script-input{
+    height: 25px;
+    border: 1px solid #61616176;
+}
+.script-input-text{
+    box-sizing: border-box;
+    padding-left: 5px;
+    width: 100%;
+    border-radius: 10px;
+    grid-area: b;
+}
+.script-button-add {
+    grid-area: e;
+    height: 30px;
+    width: 30px;
+    margin-left: 10px;
+    border-radius: 50%;
+    border: none;
+    background-color: #77b374;
+    color: #fff;
+}
+.script-button-add:hover {
+    background-color: #70a66d;
+}
+.script-button-add:active{
+    background-color: #689866;
+}

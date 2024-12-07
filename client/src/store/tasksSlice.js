@@ -24,14 +24,7 @@ const initialState = {
 const tasksSlice = createSlice({
     name: "todos",
     initialState,
-    reducers: {
-        setSearchValue: (state, action) => {
-            state.searchValue = action.payload
-        },
-        setFilterSearch: (state, action) => {
-            state.filtered = action.payload
-        }
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchTasks.pending, (state) => {
@@ -52,5 +45,4 @@ const tasksSlice = createSlice({
     }
 });
 
-export const { setSearchValue, setFilterSearch } = tasksSlice.actions
 export default tasksSlice.reducer;

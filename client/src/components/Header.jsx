@@ -10,7 +10,6 @@ import bluelogo from '../static/images/blue.png'
 
 
 const Header = () => {
-    let isAuth = false
     return (
         <div className="header">
             <div className='header-nav'>
@@ -18,15 +17,15 @@ const Header = () => {
                     <Link to="/"><img src={bluelogo} alt="" /></Link>
                 </div>
                 <nav className="header-links">
-                    <Link to="/" className='header-link'>
+                    <Link draggable="false"  to="/" className='header-link'>
                         <p className='header-link-item'>Главная</p>
                         <i className="header-link-item fa-solid fa-house"></i>
                     </Link>
-                    <Link to="/tasks" className='header-link'>
+                    <Link draggable="false" to="/tasks" className='header-link'>
                         <p className='header-link-item'>Задачи</p>
                         <i className="header-link-item fa-solid fa-list-check"></i>
                     </Link>
-                    <Link to="/scripts" className='header-link'>
+                    <Link draggable="false" to="/scripts" className='header-link'>
                         <p className='header-link-item'>Скрипты</p>
                         <i className="header-link-item fa-solid fa-list"></i>
                     </Link>

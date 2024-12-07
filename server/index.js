@@ -2,8 +2,10 @@ import express from 'express'
 import sequelize from './db/database.js'
 import cors from 'cors'
 import validationError from './utils/validationError.js';
-import { taskCreateValidation } from './validations/validations.js';
+import { scriptCreateValidation, taskCreateValidation } from './validations/validations.js';
 import { createTask, getAllTasks, deleteTask, editTask } from './controllers/TaskController.js';
+import { createScript, getAllScripts } from './controllers/ScriptController.js';
+
 const PORT = 5000;
 
 
@@ -36,6 +38,12 @@ app.get('/tasks', getAllTasks)
 app.post('/tasks', taskCreateValidation, validationError, createTask)
 app.delete('/tasks', deleteTask)
 app.patch('/tasks', taskCreateValidation, validationError, editTask)
+
+// ======================= SCRIPTS ========================
+app.get('/scripts', getAllScripts)
+app.post('/scripts', scriptCreateValidation, validationError, createScript)
+
+
 
 
 //Запуск сервера

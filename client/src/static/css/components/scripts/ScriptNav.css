@@ -1,0 +1,44 @@
+.script-nav{
+    display: flex;
+    justify-self: start;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 150px;
+    padding-right: 10px;
+    height: 100%;
+}
+
+.script-nav-list{
+    border-right: 1px solid #61616176;
+    width: 100%;
+    overflow-y: scroll;
+    width: 100%;
+}
+.script-nav-list::-webkit-scrollbar{
+    border-radius: 5px;
+    width: 7px;
+    background-color: #f1f1f1;
+}
+.script-nav-list::-webkit-scrollbar-thumb{
+    border-radius: 5px;
+    background-color: #707070;
+}
+
+.script-nav-elem{
+    font-size: 14px;
+    margin: 10px 0;
+    list-style: none;
+}
+.script-nav-elem-text{
+    border-bottom: 1px solid #61616176;
+    height: 20px;
+}
+.script-nav-sublist{
+    padding-left: 10px;
+}
+.script-nav-subelem{
+    list-style: none;
+    border-bottom: 1px solid #61616176;
+    height: 20px;
+}
