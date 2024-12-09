@@ -1,5 +1,6 @@
 .script-content-top{
     display: flex;
+    width: 100%;
     justify-content: center;
     align-items: end;
     flex-direction: column;
@@ -40,10 +41,38 @@
     width: 100%;
     margin: 0 auto;
     height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column; 
 }
 .script-content-list{
     margin-top: 10px;
+    width: 95%;
+    overflow-y: scroll;
+    box-sizing: border-box;
+    padding-right: 10px;
+
 }
+.script-content-list::-webkit-scrollbar{
+    border-radius: 5px;
+    width: 7px;
+    background-color: #f1f1f1;
+}
+.script-content-list::-webkit-scrollbar-thumb{
+    border-radius: 5px;
+    background-color: #707070;
+}
+
 .script-content-elem{
     list-style: none;
+    margin: 10px auto;
+    height: 50px;
+    border-radius: 5px;
+    border: 1px solid #61616176 ;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 10px;
 }

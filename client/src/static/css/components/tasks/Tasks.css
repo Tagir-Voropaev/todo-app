@@ -15,7 +15,7 @@
     text-align: center;
 }
 .task-top{
-    width: 90%;
+    width: 100%;
     margin-top: 10px;
     display: flex;
     justify-content:flex-end;
@@ -30,7 +30,7 @@
 }
 
 .task-button-open{
-    margin: 0 10px;
+    margin-left: 10px;
     width: 100px;
     height: 25px;
     color: #fff;

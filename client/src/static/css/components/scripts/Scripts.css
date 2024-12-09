@@ -17,7 +17,8 @@
     text-align: center;
 }
 .script-top{
-    width: 90%;
+    margin-top: 10px;
+    width: 100%;
     display: flex;
     justify-content:flex-end;
     align-items: center;
@@ -34,29 +35,4 @@
     height: 100%;
     align-items: flex-start;
     overflow: hidden;
-}
-
-.script-hide{
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.script-button-open{
-    width: 100px;
-    height: 25px;
-    color: #fff;
-    border-radius: 10px;
-    background-color: #77b374;
-    border: none;
-}
-.script-button-open:hover{
-    background-color: #70a66d;
-}
-.script-button-open:active{
-    background-color: #689866;
-}
-.script-button-open i{
-    margin-left: 5px;
 }
