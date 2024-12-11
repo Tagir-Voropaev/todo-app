@@ -12,10 +12,15 @@
     justify-content: center;
     align-items: center;
 }
-
+.script-top-buttons{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
 .script-button-open{
     width: 100px;
     height: 25px;
+    margin-left: 5px;
     color: #fff;
     border-radius: 10px;
     background-color: #77b374;

@@ -2,36 +2,35 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../axios";
 
 
-export const fetchCreateTasks = createAsyncThunk('tasks/fetchCreateTasks', async (params) => {
-    const { data } = await axios.post('/tasks', params);
+export const fetchCreateSubTabs = createAsyncThunk('scripts/fetchCreateSubTabs', async (params) => {
+    const { data } = await axios.post('/scripts/subtabs', params);
     return data
 })
-
-
 
 const initialState = {
     data: null,
     status: 'loading'
 }
-const createTaskSlice = createSlice({
-    name: "createTask",
+const createSubTabsSlice = createSlice({
+    name: "createSubTabs",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchCreateTasks.pending, (state) => {
+            .addCase(fetchCreateSubTabs.pending, (state) => {
                 state.status = "loading";
                 state.data = null;
             })
-            .addCase(fetchCreateTasks.fulfilled, (state, action) => {
+            .addCase(fetchCreateSubTabs.fulfilled, (state, action) => {
                 state.data = action.payload;
                 state.status = "loaded";
             })
-            .addCase(fetchCreateTasks.rejected, (state) => {
+            .addCase(fetchCreateSubTabs.rejected, (state) => {
                 state.data = null;
                 state.status = "error";
             })
+
     }
 })
 
-export default createTaskSlice.reducer;
+export default createSubTabsSlice.reducer;

@@ -7,13 +7,14 @@ const TaskList = () => {
 
     // Существующие задачи
     const dispatch = useDispatch();
-    const { filtered, searchValue } = useSelector(state => state.search);
-    const { tasks } = useSelector(state => state.tasks);
     //Получение задач
     useEffect(() => {
         dispatch(fetchTasks())
     }, [dispatch])
-
+   
+    const { filtered, searchValue } = useSelector(state => state.search);
+    const { tasks } = useSelector(state => state.tasks);
+    
     const filteredTasks = tasks.items.filter(task => {
         return task.title.toLowerCase().includes(searchValue.toLocaleLowerCase())
     })

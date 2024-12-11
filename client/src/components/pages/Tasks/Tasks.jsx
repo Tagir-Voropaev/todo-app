@@ -1,18 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import "../../../static/css/components/tasks/Tasks.css"
 import "../../../static/css/components/tasks/SearchTask.css"
 import "../../../static/css/components/tasks/TaskList.css"
 import AddTask from './AddTask'
-import { fetchTasks } from '../../../store/tasksSlice';
-import { useDispatch } from 'react-redux'
 import SearchTask from './SearchTask'
 import TaskList from './TaskList'
 const Tasks = () => {
-    //Получение списка задач
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(fetchTasks())
-    }, [dispatch])
+
     //Стейты
     const [hideAdd, setHideAdd] = useState(false)
     //Показать/скрыть форму добавления задач

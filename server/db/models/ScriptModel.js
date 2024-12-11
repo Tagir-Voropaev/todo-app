@@ -3,7 +3,7 @@ import sequelize from "../database.js";
 
 
 
-export const TabModel = sequelize.define('Tab',
+export const TabModel = sequelize.define('TabModel',
     {
         text: {
             type: DataTypes.STRING,
@@ -18,15 +18,19 @@ export const TabModel = sequelize.define('Tab',
     }
 );
 
-export const SubTabModel = sequelize.define('SubTab',
+export const SubTabModel = sequelize.define('SubTabModel',
     {
         text: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        tabId: {
+        tabid: {
             type: DataTypes.INTEGER,
-            unique: true,
+            allowNull: false,
+            references: {
+                model: TabModel,
+                key: 'id'
+            }
         }
     },
     {
@@ -35,6 +39,13 @@ export const SubTabModel = sequelize.define('SubTab',
         tableName: 'subtab'
     }
 );
-TabModel.hasMany(SubTabModel)
-SubTabModel.belongsTo(TabModel)
+// Установка ассоциаций
+TabModel.hasMany(SubTabModel, {
+    foreignKey: 'tabid', // Указываем внешний ключ в SubTabModel
+    sourceKey: 'id' // Указываем ключ в TabModel
+});
 
+SubTabModel.belongsTo(TabModel, {
+    foreignKey: 'tabid', // Указываем внешний ключ в SubTabModel
+    targetKey: 'id' // Указываем ключ в TabModel
+});
