@@ -42,7 +42,7 @@ const ScriptNavList = ({ tabid, tabToggle, inputToggle }) => {
             <ul className="script-nav-sublist">
                 {inputToggle && (
                     <form onSubmit={handleSubmit(data => onSubmit(data, tabid))} className="script-nav-subelem script-nav-subelem-form">
-                        <input min={2} maxLength={25} {...register('text', { required: "Минимум 2 символа..." })} name='text' type='text' className='script-nav-subelem-input' placeholder='Имя подвкладки...' />
+                        <input min={2} maxLength={18} {...register('text', { required: "Минимум 2 символа..." })} name='text' type='text' className='script-nav-subelem-input' placeholder='Имя подвкладки...' />
                         <button type='submit' className='script-add-tab-button'><i className="fa-solid fa-plus"></i></button>
                     </form>
                 )}
@@ -50,7 +50,7 @@ const ScriptNavList = ({ tabid, tabToggle, inputToggle }) => {
                 {status === 'loaded'
                     ? (subtabsSorted.map((item) => {
                         return (
-                            <Link key={item.id} draggable="false" to={`/scripts/${item.id}`} className='script-link'>
+                            <Link key={item.id} draggable="false" to={`/scripts/subtab/${item.id}`} className='script-link'>
                                 <li className="script-nav-subelem">
                                     <button onClick={(e) => onDeleteButtton(item)} className='script-nav-elem-button'><i className="fa-solid fa-minus"></i></button>
                                     <p className='script-nav-subelem-text'>{item.text}</p>

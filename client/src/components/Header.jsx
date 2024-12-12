@@ -25,7 +25,7 @@ const Header = () => {
                         <p className='header-link-item'>Задачи</p>
                         <i className="header-link-item fa-solid fa-list-check"></i>
                     </Link>
-                    <Link draggable="false" to="/scripts" className='header-link'>
+                    <Link draggable="false" to="/scripts/subtab/" className='header-link'>
                         <p className='header-link-item'>Скрипты</p>
                         <i className="header-link-item fa-solid fa-list"></i>
                     </Link>

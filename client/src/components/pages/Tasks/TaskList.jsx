@@ -12,17 +12,14 @@ const TaskList = () => {
         dispatch(fetchTasks())
     }, [dispatch])
    
-    const { filtered, searchValue } = useSelector(state => state.search);
+    const { filtered, searchValue } = useSelector(state => state.searchTask);
     const { tasks } = useSelector(state => state.tasks);
     
-    const filteredTasks = tasks.items.filter(task => {
-        return task.title.toLowerCase().includes(searchValue.toLocaleLowerCase())
-    })
-
     const onDeleteButtton = async (value) => {
         await axios.delete('/tasks', { data: { id: value.id }, })
         dispatch(fetchTasks())
     }
+    
     return (
         <ul className="task-list">
             {tasks.status === 'loaded'
@@ -37,7 +34,7 @@ const TaskList = () => {
                             </li>
                         )
                     }))
-                    : (filteredTasks.map(item => {
+                    : (tasks.items.map(item => {
                         return (
                             <li key={item.id} className='task-elem'>
                                 <p className='task-title'>{item.title}</p>

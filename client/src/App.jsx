@@ -5,7 +5,6 @@ import Home from "./components/pages/Home";
 import './static/css/main.css'
 import Tasks from './components/pages/Tasks/Tasks';
 import Scripts from './components/pages/Scripts/Scripts';
-
 const App = () => {
     return (
         <div className='App'>
@@ -13,9 +12,10 @@ const App = () => {
             <div className="content">
 
                 <Routes>
-                    <Route path="/" element={<Home />}/>
+                    <Route path="/" element={<Home />} />
                     <Route path="/tasks" element={<Tasks />} />
-                    <Route path='/scripts/*' element={<Scripts />} />
+                    <Route path='/scripts/subtab/' element={<Scripts />} />
+                    <Route path='/scripts/subtab/:id' element={<Scripts />} />
                 </Routes>
             </div>
         </div>

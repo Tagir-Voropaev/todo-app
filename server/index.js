@@ -4,7 +4,7 @@ import cors from 'cors'
 import validationError from './utils/validationError.js';
 import { scriptCreateValidation, tabCreateValidation, taskCreateValidation } from './validations/validations.js';
 import { createTask, getAllTasks, deleteTask, editTask } from './controllers/TaskController.js';
-import { createSubTab, createTab, deleteSubTab, deleteTab, getAllSubTabs, getAllTabs} from './controllers/ScriptController.js';
+import { createScript, createSubTab, createTab, deleteScript, deleteSubTab, deleteTab, getAllScripts, getAllTabs, getScripts} from './controllers/ScriptController.js';
 const PORT = 5000;
 
 //Проверка подключения бд
@@ -42,9 +42,14 @@ app.get('/scripts/tabs', getAllTabs)
 app.post('/scripts/tabs', tabCreateValidation, validationError,  createTab);
 app.delete('/scripts/tabs', deleteTab)
 
-// app.get('/scripts/subtabs', getAllSubTabs)
 app.post('/scripts/subtabs', tabCreateValidation, validationError,  createSubTab);
 app.delete('/scripts/subtabs', deleteSubTab)
+
+app.get('/scripts/subtab/', getAllScripts)
+app.get('/scripts/subtab/:id', getScripts)
+app.post('/scripts/subtab/:id', tabCreateValidation, validationError, createScript);
+app.delete('/scripts/subtab/:id', deleteScript)
+
 
 
 
