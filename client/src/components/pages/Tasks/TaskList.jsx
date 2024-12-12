@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../../../static/css/components/tasks/TaskList.css"
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchTasks } from '../../../store/tasksSlice'
-import axios from '../../../axios'
+import WarningTask from './WarningTask'
 const TaskList = () => {
 
     // Существующие задачи
@@ -11,17 +11,22 @@ const TaskList = () => {
     useEffect(() => {
         dispatch(fetchTasks())
     }, [dispatch])
-   
+
     const { filtered, searchValue } = useSelector(state => state.searchTask);
     const { tasks } = useSelector(state => state.tasks);
-    
+
+    const [hideWarning, setHideWarning] = useState(false)
+    const [warningVal, setWarningVal] = useState({})
+
     const onDeleteButtton = async (value) => {
-        await axios.delete('/tasks', { data: { id: value.id }, })
-        dispatch(fetchTasks())
+        setHideWarning(true)
+        setWarningVal({ propurl: (`/tasks`), propdata: { data: { id: value.id }, }, hide: setHideWarning, fetchupdate: fetchTasks })
+
     }
-    
+
     return (
         <ul className="task-list">
+            {hideWarning && <WarningTask warningVal={warningVal} />}
             {tasks.status === 'loaded'
                 ? (searchValue
                     ? (filtered.map(item => {

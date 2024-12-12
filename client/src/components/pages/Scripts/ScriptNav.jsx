@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import axios from '../../../axios'
 import { useForm } from 'react-hook-form'
 import { fetchCreateTabs } from '../../../store/createTabsSlice'
+import WarningScriptNav from './WarningScriptNav'
 
 
 const ScriptNav = () => {
@@ -14,15 +15,20 @@ const ScriptNav = () => {
         dispatch(fetchNavScripts())
     }, [dispatch])
     const { tabs, status } = useSelector(state => state.navscript);
+
+    const [hideWarning, setHideWarning] = useState(false)
+    const [warningVal, setWarningVal] = useState({})
     const [tabToggle, setTabToggle] = useState("")
     const [inputToggle, setInputToggle] = useState(false)
+
+
     const { register, handleSubmit } = useForm({
         defaultValues: {
             text: '',
         },
         mode: 'onChange'
     })
-    
+
     const onSubmit = (values) => {
         dispatch(fetchCreateTabs(values))
         dispatch(fetchNavScripts())
@@ -49,16 +55,20 @@ const ScriptNav = () => {
         }
     }
     const onDeleteButtton = async (value) => {
-        await axios.delete('/scripts/tabs', { data: { id: value.id }, })
-        dispatch(fetchNavScripts())
+        setHideWarning(true)
+        setWarningVal({ propurl: (`/scripts/tabs`), propdata: { data: { id: value.id }, }, hide: setHideWarning, fetchupdate: fetchNavScripts })
+
+        // await axios.delete('/scripts/tabs', { data: { id: value.id }, })
+        // dispatch(fetchNavScripts())
     }
 
 
 
     return (
         <div className="script-nav">
+             {hideWarning && <WarningScriptNav warningVal={warningVal} />}
             <form onSubmit={handleSubmit(onSubmit)} className="script-nav-add">
-                <input min={2} maxLength={20} {...register('text', { required: "Минимум 2 символа..."} )} name='text' type="text" placeholder='Добавить вкладку...' />
+                <input min={2} maxLength={20} {...register('text', { required: "Минимум 2 символа..." })} name='text' type="text" placeholder='Добавить вкладку...' />
                 <button type='submit'><i className="fa-solid fa-plus"></i></button>
             </form>
             <ul className="script-nav-list">

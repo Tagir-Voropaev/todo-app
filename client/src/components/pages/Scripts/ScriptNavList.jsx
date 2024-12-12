@@ -1,16 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import { fetchCreateSubTabs } from '../../../store/createSubTabsSlice'
 import { fetchNavScripts } from '../../../store/scriptNavSlice'
-import axios from '../../../axios'
+// import axios from '../../../axios'
 import { Link } from 'react-router-dom';
+import WarningScriptNav from './WarningScriptNav'
 
 
 const ScriptNavList = ({ tabid, tabToggle, inputToggle }) => {
     const dispatch = useDispatch()
     const { subtabs, status } = useSelector(state => state.navscript);
-    
+
+    const [hideWarning, setHideWarning] = useState(false)
+    const [warningVal, setWarningVal] = useState({})
+
     const subtabsSorted = []
     for (let index = 0; index < subtabs.length; index++) {
         if (subtabs[index].tabid === tabid) {
@@ -33,13 +37,17 @@ const ScriptNavList = ({ tabid, tabToggle, inputToggle }) => {
         dispatch(fetchNavScripts())
     }
     const onDeleteButtton = async (value) => {
-        await axios.delete('/scripts/subtabs', { data: { id: value.id }, })
-        dispatch(fetchNavScripts())
+        setHideWarning(true)
+        setWarningVal({ propurl: (`/scripts/subtabs`), propdata: { data: { id: value.id }, }, hide: setHideWarning, fetchupdate: fetchNavScripts})
+
+        // await axios.delete('/scripts/subtabs', { data: { id: value.id }, })
+        // dispatch(fetchNavScripts())
     }
 
     if (tabToggle === tabid) {
         return (
             <ul className="script-nav-sublist">
+                {hideWarning && <WarningScriptNav warningVal={warningVal} />}
                 {inputToggle && (
                     <form onSubmit={handleSubmit(data => onSubmit(data, tabid))} className="script-nav-subelem script-nav-subelem-form">
                         <input min={2} maxLength={18} {...register('text', { required: "Минимум 2 символа..." })} name='text' type='text' className='script-nav-subelem-input' placeholder='Имя подвкладки...' />

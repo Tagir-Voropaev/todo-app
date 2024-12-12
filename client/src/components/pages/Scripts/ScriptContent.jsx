@@ -4,17 +4,17 @@ import '../../../static/css/components/scripts/ScriptContent.css'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchScripts } from '../../../store/scriptSlice'
-import axios from '../../../axios'
+// import axios from '../../../axios'
 import { fetchAllScripts } from '../../../store/allScriptsSlice'
 import SearchScript from './SearchScript'
-
+import WarningScript from './WarningScript'
 
 const ScriptContent = () => {
     const dispatch = useDispatch()
 
     const [hideAdd, setHideAdd] = useState(false)
     const [hideWarning, setHideWarning] = useState(false)
-    const [warningVal, setWarningVal] = useState(false)
+    const [warningVal, setWarningVal] = useState({})
     const params = useParams('id')
 
     useEffect(() => {
@@ -30,15 +30,18 @@ const ScriptContent = () => {
     const toggleAdd = () => {
         return setHideAdd(s => (!s));
     }
-
+    // const { warningHide } = useSelector(state => state.warning);
     const onDeleteButtton = async (value) => {
         setHideWarning(true)
-        await axios.delete(`/scripts/subtab/${params.id}`, { data: { id: value.id }, })
-        dispatch(fetchScripts(params.id))
+        
+        setWarningVal({ propurl: (`/scripts/subtab/${params.id}`), propdata:{ data: { id: value.id }, }, hide: setHideWarning, propurlparams: params, fetchupdate: fetchAllScripts})
+
+        // await axios.delete(`/scripts/subtab/${params.id}`, { data: { id: value.id }, })
     }
 
     return (
         <div className="script-content">
+            {hideWarning && <WarningScript warningVal={warningVal} />}
             <div className="script-content-top">
                 <div className="script-top-buttons">
                     <SearchScript />
