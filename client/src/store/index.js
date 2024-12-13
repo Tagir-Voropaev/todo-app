@@ -1,15 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
-import tasksSlice from './tasksSlice'
-import createTaskSlice from './createTaskSlice'
-import searchTaskSlice from './searchTaskSlice'
-import navscriptSlice from './scriptNavSlice'
-import createTabsSlice from './createTabsSlice'
-import createSubTabsSlice from './createSubTabsSlice'
-import scriptsSlice from './scriptSlice'
-import createScriptSlice from './createScriptSlice'
-import allScriptsSlice from './allScriptsSlice'
-import searchScriptSlice from './searchScriptSlice'
-import warningSlice from './warningSlice'
+import tasksSlice from './tasks/tasksSlice'
+import createTaskSlice from './tasks/createTaskSlice'
+import searchTaskSlice from './tasks/searchTaskSlice'
+import navscriptSlice from './scripts/scriptNavSlice'
+import createTabsSlice from './scripts/createTabsSlice'
+import createSubTabsSlice from './scripts/createSubTabsSlice'
+import scriptsSlice from './scripts/scriptSlice'
+import createScriptSlice from './scripts/createScriptSlice'
+import allScriptsSlice from './scripts/allScriptsSlice'
+import searchScriptSlice from './scripts/searchScriptSlice'
+import allSchoolsSlice from './timetable/allSchoolsSlice'
 const index = configureStore({
     reducer: {
         tasks: tasksSlice,
@@ -22,7 +22,7 @@ const index = configureStore({
         scripts: scriptsSlice,
         createScripts: createScriptSlice,
         allscripts: allScriptsSlice,
-        warning: warningSlice,
+        allschools: allSchoolsSlice,
     }
 })
 

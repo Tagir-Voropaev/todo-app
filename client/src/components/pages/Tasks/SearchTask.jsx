@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { setFilterSearchTask, setSearchValueTask } from '../../../store/searchTaskSlice';
+import { setFilterSearchTask, setSearchValueTask } from '../../../store/tasks/searchTaskSlice';
 
 const SearchTask = () => {
 

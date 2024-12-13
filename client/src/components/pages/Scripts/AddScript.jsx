@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import "../../../static/css/components/scripts/AddScript.css"
 import { useForm } from 'react-hook-form'
-import { fetchCreateScripts } from '../../../store/createScriptSlice'
-import { fetchScripts } from '../../../store/scriptSlice'
+import { fetchCreateScripts } from '../../../store/scripts/createScriptSlice'
+import { fetchScripts } from '../../../store/scripts/scriptSlice'
 import { useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
@@ -22,10 +22,9 @@ const AddScript = () => {
         },
         mode: 'onChange'
     })
-    const onSubmit = (values) => {
-        dispatch(fetchCreateScripts({id:params.id, values:values}))
-        dispatch(fetchScripts(params.id))
-        dispatch(fetchScripts(params.id))
+    const onSubmit = async (values) => {
+        await dispatch(fetchCreateScripts({id:params.id, values:values}))
+        await dispatch(fetchScripts(params.id))
     }
     return (
             <form onSubmit={handleSubmit(onSubmit)} className="script-add-show">

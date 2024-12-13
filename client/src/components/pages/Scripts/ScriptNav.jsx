@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import '../../../static/css/components/scripts/ScriptNav.css'
 import ScriptNavList from './ScriptNavList'
-import { fetchNavScripts } from '../../../store/scriptNavSlice'
+import { fetchNavScripts } from '../../../store/scripts/scriptNavSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from '../../../axios'
 import { useForm } from 'react-hook-form'
-import { fetchCreateTabs } from '../../../store/createTabsSlice'
-import WarningScriptNav from './WarningScriptNav'
+import { fetchCreateTabs } from '../../../store/scripts/createTabsSlice'
+import Warning from '../../Warning'
 
 
 const ScriptNav = () => {
@@ -17,9 +17,9 @@ const ScriptNav = () => {
     const { tabs, status } = useSelector(state => state.navscript);
 
     const [hideWarning, setHideWarning] = useState(false)
-    const [warningVal, setWarningVal] = useState({})
     const [tabToggle, setTabToggle] = useState("")
     const [inputToggle, setInputToggle] = useState(false)
+    const [item, setItem] = useState({})
 
 
     const { register, handleSubmit } = useForm({
@@ -29,10 +29,9 @@ const ScriptNav = () => {
         mode: 'onChange'
     })
 
-    const onSubmit = (values) => {
-        dispatch(fetchCreateTabs(values))
-        dispatch(fetchNavScripts())
-        dispatch(fetchNavScripts())
+    const onSubmit = async (values) => {
+        await dispatch(fetchCreateTabs(values))
+        await dispatch(fetchNavScripts())
     }
 
     const tabToggleHandler = (id) => {
@@ -54,19 +53,28 @@ const ScriptNav = () => {
             return setTabToggle(id);
         }
     }
+    const hideWarningHandler = async (value) => {
+        setHideWarning(false)
+    }
+    const handleScriptDelete = async () => {
+        await axios.delete((`/scripts/tabs`), { data: { id: item.id }, })
+        setHideWarning(false)
+        dispatch(fetchNavScripts())
+    }
     const onDeleteButtton = async (value) => {
         setHideWarning(true)
-        setWarningVal({ propurl: (`/scripts/tabs`), propdata: { data: { id: value.id }, }, hide: setHideWarning, fetchupdate: fetchNavScripts })
-
-        // await axios.delete('/scripts/tabs', { data: { id: value.id }, })
-        // dispatch(fetchNavScripts())
+        setItem(value)
     }
 
 
 
     return (
         <div className="script-nav">
-             {hideWarning && <WarningScriptNav warningVal={warningVal} />}
+            {hideWarning && <Warning
+                message={"Вы действительно хотите удалить эту вкладку?"}
+                onConfirm={handleScriptDelete}
+                onCancel={hideWarningHandler}
+            />}
             <form onSubmit={handleSubmit(onSubmit)} className="script-nav-add">
                 <input min={2} maxLength={20} {...register('text', { required: "Минимум 2 символа..." })} name='text' type="text" placeholder='Добавить вкладку...' />
                 <button type='submit'><i className="fa-solid fa-plus"></i></button>

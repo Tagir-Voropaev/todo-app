@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { setFilterSearchScript, setSearchValueScript } from '../../../store/searchScriptSlice';
+import { setFilterSearchScript, setSearchValueScript } from '../../../store/scripts/searchScriptSlice';
 import { useParams } from 'react-router-dom';
 
 const SearchScript = () => {

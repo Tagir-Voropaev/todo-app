@@ -79,8 +79,62 @@
     justify-content: space-between;
     align-items: center;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 5px 0;
+    padding-left: 5px;
+    padding-right: 10px;
+
 }
+/* .script-content-elem-clipborad{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+} */
+
+.script-content-elem-clipborad {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding-left: 5px;
+    transition: all 0.2s ease;
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    margin-right: 8px; /* Отступ от кнопки удаления */
+}
+
+.script-content-elem-clipborad:hover {
+    background-color: #f5f5f5;
+}
+
+.script-content-elem-clipborad:active {
+    background-color: #e0e0e0;
+    transform: scale(0.98);
+}
+
+/* Стили для текста внутри */
+.script-content-elem-clipborad p {
+    user-select: none;
+    margin: 0;
+    padding: 0;
+    word-break: break-word; /* Перенос длинных слов */
+}
+
+/* Добавим визуальный индикатор возможности копирования */
+.script-content-elem-clipborad::after {
+    content: '📋';
+    opacity: 0;
+    margin-right: 8px;
+    transition: opacity 0.2s ease;
+}
+
+.script-content-elem-clipborad:hover::after {
+    opacity: 0.5;
+}
+
 .script-content-delete{
     width: 25px;
     height: 25px;

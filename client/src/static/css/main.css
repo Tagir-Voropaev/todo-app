@@ -20,6 +20,10 @@ a{
 button, input{
     outline: none;
 }
+.window-block{
+    padding: 0 20px;
+}
+
 /* 
 Цвета
 

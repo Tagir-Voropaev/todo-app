@@ -3,23 +3,27 @@ import AddScript from './AddScript'
 import '../../../static/css/components/scripts/ScriptContent.css'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchScripts } from '../../../store/scriptSlice'
-// import axios from '../../../axios'
-import { fetchAllScripts } from '../../../store/allScriptsSlice'
+import { fetchScripts } from '../../../store/scripts/scriptSlice'
+import axios from '../../../axios'
+import { fetchAllScripts } from '../../../store/scripts/allScriptsSlice'
 import SearchScript from './SearchScript'
-import WarningScript from './WarningScript'
-
+import Warning from '../../Warning'
 const ScriptContent = () => {
     const dispatch = useDispatch()
 
     const [hideAdd, setHideAdd] = useState(false)
     const [hideWarning, setHideWarning] = useState(false)
-    const [warningVal, setWarningVal] = useState({})
     const params = useParams('id')
-
+    const [item, setItem] = useState({})
     useEffect(() => {
-        dispatch(fetchScripts(params.id))
-        dispatch(fetchAllScripts())
+        setHideAdd(false);
+        if (params.id) {
+            dispatch(fetchScripts(params.id))
+        } else {
+            dispatch(fetchAllScripts())
+        }
+        // dispatch(fetchScripts(params.id))
+        // dispatch(fetchAllScripts())
     }, [dispatch, params.id])
     const scripts = useSelector(state => state.scripts);
     const allscripts = useSelector(state => state.allscripts);
@@ -28,25 +32,55 @@ const ScriptContent = () => {
 
 
     const toggleAdd = () => {
-        return setHideAdd(s => (!s));
+        if (hideAdd) {
+            setHideAdd(false)
+        } else {
+            setHideAdd(true)
+        }
     }
-    // const { warningHide } = useSelector(state => state.warning);
+    const hideWarningHandler = async (value) => {
+        setHideWarning(false)
+    }
+    const handleScriptDelete = async () => {
+        await axios.delete((`/scripts/subtab/${params.id}`), { data: { id: item.id }, })
+        setHideWarning(false)
+        if (params.id) {
+            dispatch(fetchScripts(params.id))
+        } else {
+            dispatch(fetchAllScripts())
+        }
+    }
     const onDeleteButtton = async (value) => {
         setHideWarning(true)
-        
-        setWarningVal({ propurl: (`/scripts/subtab/${params.id}`), propdata:{ data: { id: value.id }, }, hide: setHideWarning, propurlparams: params, fetchupdate: fetchAllScripts})
-
-        // await axios.delete(`/scripts/subtab/${params.id}`, { data: { id: value.id }, })
+        setItem(value)
     }
+
+    const copyToClipboard = async (text, element) => {
+        try {
+            await navigator.clipboard.writeText(text);
+
+
+        } catch (err) {
+            console.error('Ошибка при копировании:', err);
+        }
+    };
+
 
     return (
         <div className="script-content">
-            {hideWarning && <WarningScript warningVal={warningVal} />}
+            {hideWarning && <Warning
+                message={"Вы действительно хотите удалить этот скрипт?"}
+                onConfirm={handleScriptDelete}
+                onCancel={hideWarningHandler}
+            />}
             <div className="script-content-top">
                 <div className="script-top-buttons">
                     <SearchScript />
-                    {params.id && <button className='script-button-open' onClick={toggleAdd}>Добавить</button>}
-
+                    {params.id &&
+                        <button className='script-button-open' onClick={toggleAdd}>
+                            {hideAdd ? 'Закрыть' : 'Добавить'}
+                        </button>
+                    }
                 </div>
                 <div className="script-hide">
                     {hideAdd && (<AddScript />)}
@@ -57,7 +91,9 @@ const ScriptContent = () => {
                     ? ((filtered.map(item => {
                         return (
                             <li key={item.id} className="script-content-elem">
-                                <p>{item.text}</p>
+                                <div onClick={() => copyToClipboard(item.text)} className="script-content-elem-clipborad">
+                                    <p>{item.text}</p>
+                                </div>
                                 <button onClick={(e) => onDeleteButtton(item)} className='script-content-delete'><i className="fa-solid fa-trash"></i></button>
                             </li>
                         )
@@ -67,7 +103,9 @@ const ScriptContent = () => {
                             ? (scripts.scripts.map((item) => {
                                 return (
                                     <li key={item.id} className="script-content-elem">
-                                        <p>{item.text}</p>
+                                        <div onClick={() => copyToClipboard(item.text)} className="script-content-elem-clipborad">
+                                            <p>{item.text}</p>
+                                        </div>
                                         <button onClick={(e) => onDeleteButtton(item)} className='script-content-delete'><i className="fa-solid fa-trash"></i></button>
                                     </li>
                                 )
@@ -78,7 +116,9 @@ const ScriptContent = () => {
                             ? (allscripts.allscripts.map((item) => {
                                 return (
                                     <li key={item.id} className="script-content-elem">
-                                        <p>{item.text}</p>
+                                        <div onClick={() => copyToClipboard(item.text)} className="script-content-elem-clipborad">
+                                            <p>{item.text}</p>
+                                        </div>
                                         <button onClick={(e) => onDeleteButtton(item)} className='script-content-delete'><i className="fa-solid fa-trash"></i></button>
                                     </li>
                                 )

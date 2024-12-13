@@ -1,9 +1,9 @@
 import React from 'react'
 import "../../../static/css/components/tasks/AddTask.css"
 import { useForm } from 'react-hook-form'
-import { fetchCreateTasks } from '../../../store/createTaskSlice'
+import { fetchCreateTasks } from '../../../store/tasks/createTaskSlice'
 import {useDispatch} from 'react-redux'
-import { fetchTasks } from '../../../store/tasksSlice'
+import { fetchTasks } from '../../../store/tasks/tasksSlice'
 
 
 
@@ -20,9 +20,9 @@ export default function AddTask() {
         },
         mode: 'onChange'
     })
-    const onSubmit = (values) => {
-        dispatch(fetchCreateTasks(values))
-        dispatch(fetchTasks())
+    const onSubmit = async (values) => {
+        await dispatch(fetchCreateTasks(values))
+        await dispatch(fetchTasks())
     }
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="task-add-show">

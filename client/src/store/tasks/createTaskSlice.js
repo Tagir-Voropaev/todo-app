@@ -1,36 +1,37 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "../axios";
+import axios from "../../axios";
 
 
-export const fetchCreateScripts = createAsyncThunk('scripts/fetchCreateScripts', async (value) => {
-    const { data } = await axios.post(`/scripts/subtab/${value.id}`, value.values);
+export const fetchCreateTasks = createAsyncThunk('tasks/fetchCreateTasks', async (params) => {
+    const { data } = await axios.post('/tasks', params);
     return data
 })
+
+
 
 const initialState = {
     data: null,
     status: 'loading'
 }
-const createScriptSlice = createSlice({
-    name: "createScripts",
+const createTaskSlice = createSlice({
+    name: "createTask",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchCreateScripts.pending, (state) => {
+            .addCase(fetchCreateTasks.pending, (state) => {
                 state.status = "loading";
                 state.data = null;
             })
-            .addCase(fetchCreateScripts.fulfilled, (state, action) => {
+            .addCase(fetchCreateTasks.fulfilled, (state, action) => {
                 state.data = action.payload;
                 state.status = "loaded";
             })
-            .addCase(fetchCreateScripts.rejected, (state) => {
+            .addCase(fetchCreateTasks.rejected, (state) => {
                 state.data = null;
                 state.status = "error";
             })
-
     }
 })
 
-export default createScriptSlice.reducer;
+export default createTaskSlice.reducer;

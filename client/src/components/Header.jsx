@@ -29,6 +29,10 @@ const Header = () => {
                         <p className='header-link-item'>Скрипты</p>
                         <i className="header-link-item fa-solid fa-list"></i>
                     </Link>
+                    <Link draggable="false" to="/timetable" className='header-link'>
+                        <p className='header-link-item'>Расписание</p>
+                        <i className="header-link-item fa-solid fa-calendar-days"></i>
+                    </Link>
                 </nav>
                 <div className="header-side">
                    

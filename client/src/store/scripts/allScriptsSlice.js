@@ -1,36 +1,36 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "../axios";
+import axios from "../../axios";
 
 
-export const fetchScripts = createAsyncThunk('scripts/fetchScripts', async (scriptid) => {
-    const { data } = await axios.get(`/scripts/subtab/${scriptid}`);
+export const fetchAllScripts = createAsyncThunk('scripts/fetchAllScripts', async () => {
+    const { data } = await axios.get('/scripts/subtab/');
     return data
 })
 
 
 const initialState = {
-    scripts: [],
+    allscripts: [],
     status: 'loading',
     error: false,
 }
 
 
-const scriptsSlice = createSlice({
-    name: "scripts",
+const allScriptsSlice = createSlice({
+    name: "allscripts",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchScripts.pending, (state) => {
+            .addCase(fetchAllScripts.pending, (state) => {
                 state.status = "loading";
                 state.error = false;
             })
-            .addCase(fetchScripts.fulfilled, (state, action) => {
-                state.scripts = action.payload;
+            .addCase(fetchAllScripts.fulfilled, (state, action) => {
+                state.allscripts = action.payload;
                 state.error = false;
                 state.status = "loaded";
             })
-            .addCase(fetchScripts.rejected, (state) => {
+            .addCase(fetchAllScripts.rejected, (state) => {
                 state.scripts = [];
                 state.error = true;
                 state.status = "error";
@@ -38,4 +38,4 @@ const scriptsSlice = createSlice({
     }
 });
 
-export default scriptsSlice.reducer;
+export default allScriptsSlice.reducer;
