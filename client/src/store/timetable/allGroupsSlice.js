@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../axios";
 
-export const fetchAllSchools = createAsyncThunk('schools/fetchAllSchools', async () => {
-    const { data } = await axios.get('/schools');
+export const fetchAllGroups = createAsyncThunk('groups/fetchAllGroups', async () => {
+    const { data } = await axios.get('/groups');
     return data;
 });
 
@@ -12,25 +12,25 @@ const initialState = {
     error: null
 };
 
-const allSchoolsSlice = createSlice({
-    name: 'allschools',
+const allGroupsSlice = createSlice({
+    name: 'allgroups',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchAllSchools.pending, (state) => {
+            .addCase(fetchAllGroups.pending, (state) => {
                 state.status = 'loading';
                 state.error = null;
             })
-            .addCase(fetchAllSchools.fulfilled, (state, action) => {
+            .addCase(fetchAllGroups.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.items = action.payload;
             })
-            .addCase(fetchAllSchools.rejected, (state, action) => {
+            .addCase(fetchAllGroups.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message;
             });
     },
 });
 
-export default allSchoolsSlice.reducer;
+export default allGroupsSlice.reducer;

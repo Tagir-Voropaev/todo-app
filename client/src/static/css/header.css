@@ -55,7 +55,8 @@
     color: #000;
     border-radius: 5px;
     margin: auto 10px;
-    width: 120px;
+    max-width: 120px;
+    width: 100%;
     height: 30px;
     user-select: none;
 }
@@ -65,78 +66,24 @@
 .header-link:active {
     background-color: #e3e3e3;
 }
-.header-link-item{
+.header-link-item {
     margin: 0 5px;
+    white-space: nowrap; /* Предотвращает перенос текста */
+    overflow: hidden; /* Скрывает выходящий за пределы текст */
+    text-overflow: ellipsis; /* Добавляет многоточие при обрезании */
+    font-size: clamp(10px, 1.7vw, 14px); /* Адаптивный размер шрифта */
 }
 
-.header-side {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.header-auth{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.header-auth-elem{
-    outline: none;
-    margin: 5px;
-    border-radius: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 0.8rem;
-    height: 2rem;
-}
-.header-login{
-    width: 5rem;
-    background-color: #fff;
-    color: #5858ff;
-    border: 1px solid #5858ff;
-}
-.header-login:hover{
-    background-color: #43439b;
-    color: #eeeeee;
-}
-.header-login:active{
-    background-color: #404093;
-    color: #e3e3e3;
-}
-.header-reg{
-    width: 8rem;
-    background-color: #5858ff;
-    color: #fff;
-}
-.header-reg:hover{
-    background-color: #43439b;
-}
-.header-reg:active{
-    background-color: #404093;
-    color: #e3e3e3;
+/* Добавляем медиа-запросы для разных размеров экрана */
+@media screen and (max-width: 768px) {
+    .header-link-item {
+        margin: 0 3px;
+    }
 }
 
-.header-logout{
-    width: 5rem;
-    background-color: #fff;
-    color: #9c3030;
-    border: 1px solid #9c3030;
-}
-.header-logout:hover{
-    background-color: #9c3030;
-    color: #eeeeee;
-}
-.header-logout:active{
-    background-color: #9a3939;
-    color: #e3e3e3;
-}
-.link-color{
-    transition: 0.1s ease-out;
-    color: #000;
-    border-bottom:1px solid #ffffff;
-    padding-bottom: 0px;
-}
-.link-color:hover{
-    padding-bottom: 3px;
-    border-bottom:1px solid #000;
+@media screen and (max-width: 480px) {
+    .header-link-item {
+        margin: 0 2px;
+        max-width: 100%; /* Максимальная ширина на маленьких экранах */
+    }
 }

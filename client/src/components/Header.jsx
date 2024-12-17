@@ -1,12 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import '../static/css/header.css'
-// import whitelogo from '../static/images/whitelogo.png'
-// import whitebluelogo from '../static/images/whiteblue.png'
 import bluelogo from '../static/images/blue.png'
-// import blacklogo from '../static/images/blacklogo.png'
-
-// import viollogo from '../images/viollogo.png'
 
 
 const Header = () => {
@@ -34,9 +29,6 @@ const Header = () => {
                         <i className="header-link-item fa-solid fa-calendar-days"></i>
                     </Link>
                 </nav>
-                <div className="header-side">
-                   
-                </div>
             </div>
         </div>
     )

@@ -10,6 +10,14 @@ import createScriptSlice from './scripts/createScriptSlice'
 import allScriptsSlice from './scripts/allScriptsSlice'
 import searchScriptSlice from './scripts/searchScriptSlice'
 import allSchoolsSlice from './timetable/allSchoolsSlice'
+import allGroupsSlice from './timetable/allGroupsSlice'
+import timetableNavSlice from './timetable/timetableNavSlice'
+import createSchoolSlice from './timetable/createSchoolSlice'
+import createGroupSlice from './timetable/createGroupSlice'
+import allLessonsSlice from './timetable/allLessonsSlice'
+import createLessonSlice from './timetable/createLessonSlice'
+
+
 const index = configureStore({
     reducer: {
         tasks: tasksSlice,
@@ -23,6 +31,12 @@ const index = configureStore({
         createScripts: createScriptSlice,
         allscripts: allScriptsSlice,
         allschools: allSchoolsSlice,
+        allgroups: allGroupsSlice,
+        timetableNav: timetableNavSlice,
+        createSchool: createSchoolSlice,
+        createGroup: createGroupSlice,
+        allLessons: allLessonsSlice,
+        createLesson: createLessonSlice,
     }
 })
 

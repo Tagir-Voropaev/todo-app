@@ -8,14 +8,23 @@
 body {
     min-width: 480px;
     background-color: #f1f1f1;
+    height: 100vh;
 }
 a{
     text-decoration: none;
 }
-.App{
+#root{
+    height: 100%;
 }
-.content{
+.App{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.content {
+    flex: 1;
     padding: 20px;
+    overflow: hidden;
 }
 button, input{
     outline: none;
@@ -23,7 +32,9 @@ button, input{
 .window-block{
     padding: 0 20px;
 }
-
+.wrapper{
+    height: 100%;
+}
 /* 
 Цвета
 

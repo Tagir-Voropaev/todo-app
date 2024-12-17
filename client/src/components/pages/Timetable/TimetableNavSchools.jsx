@@ -1,85 +1,166 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchAllSchools } from '../../../store/timetable/allSchoolsSlice'
+import { fetchCreateSchool } from '../../../store/timetable/createSchoolSlice'
+import {
+    toggleSchoolDropdown,
+    setSelectedSchool,
+    toggleSchoolInput,
+    toggleGroupInput
+} from '../../../store/timetable/timetableNavSlice'
+import axios from '../../../axios'
+import Warning from '../../Warning'
 
-const TimetableNavSchools = ({setIsOpenGroup, setSelectedGroup}) => {
+const TimetableNavSchools = () => {
+
 
     const dispatch = useDispatch()
-    const [isOpenSchool, setIsOpenSchool] = useState(false);
-    const schoolRef = useRef(null);
-    const [selectedSchool, setSelectedSchool] = useState('Все школы');
-    const [inputToggleSchool, setInputToggleSchool] = useState(false);
-    const [inputToggleGroup, setInputToggleGroup] = useState(false);
+    const schoolRef = useRef(null)
+    const [newSchoolName, setNewSchoolName] = useState('')
+    const [hideWarning, setHideWarning] = useState(false)
+    const [itemToDelete, setItemToDelete] = useState({})
+
+
+    const {
+        isOpenSchool,
+        selectedSchool,
+        inputToggleSchool,
+        inputToggleGroup
+    } = useSelector(state => state.timetableNav)
+
+    const { items: schools } = useSelector(state => state.allschools)
+    const { status: createStatus } = useSelector(state => state.createSchool)
 
     useEffect(() => {
-        dispatch(fetchAllSchools());
-    }, [dispatch]);
+        dispatch(fetchAllSchools())
+    }, [dispatch])
 
-    const {items} = useSelector(state => state.allschools);
-    console.log(items)
-    // Пример списка школ (в реальном приложении данные могут приходить с сервера)
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            // Закрытие меню школ
-            if (schoolRef.current && !schoolRef.current.contains(event.target)) {
-                setIsOpenSchool(false);
-                setInputToggleSchool(false);
-            }
-            // Закрытие меню групп
-           
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-    
-    const handleSchoolSelect = (school) => {
-        setSelectedSchool(school.name);
-        setIsOpenSchool(false);
-    };
-   
-  
-    const onDeleteButtton = (item) => {
-        console.log(item)
-    }
+        if (createStatus === 'loaded') {
+            dispatch(fetchAllSchools())
+            setNewSchoolName('')
+            dispatch(toggleSchoolInput(false))
+        }
+    }, [createStatus, dispatch])
 
-    const openSchoolHandler = async() => {
-            setIsOpenSchool(prev => !prev);
-    }
-    const inputToggleHandlerSchool = async () => {
-        setInputToggleSchool((e) => !e)
+    const handleClickOutside = useCallback((event) => {
+        if (schoolRef.current && !schoolRef.current.contains(event.target)) {
+            dispatch(toggleSchoolDropdown(false))
+            dispatch(toggleSchoolInput(false))
+        }
+    }, [dispatch])
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [handleClickOutside])
+
+    const handleSchoolSelect = useCallback((school) => {
+        dispatch(setSelectedSchool(school))
+        dispatch(toggleSchoolDropdown(false))
+    }, [dispatch])
+
+    const openSchoolHandler = useCallback(() => {
+        dispatch(toggleSchoolDropdown(!isOpenSchool))
+    }, [dispatch, isOpenSchool])
+
+    const inputToggleHandlerSchool = useCallback(() => {
+        dispatch(toggleSchoolInput(!inputToggleSchool))
         if (inputToggleGroup) {
-            setInputToggleGroup(false)
+            dispatch(toggleGroupInput(false))
+        }
+    }, [dispatch, inputToggleSchool, inputToggleGroup])
+
+    const handleCreateSchool = useCallback(() => {
+        if (newSchoolName.trim()) {
+            dispatch(fetchCreateSchool({ name: newSchoolName.trim() }))
+        }
+    }, [dispatch, newSchoolName])
+
+    const handleKeyPress = useCallback((e) => {
+        if (e.key === 'Enter') {
+            handleCreateSchool()
+        }
+    }, [handleCreateSchool])
+
+    const hideWarningHandler = () => {
+        setHideWarning(false)
+    }
+    const handleSchoolDelete = async () => {
+        try {
+            await axios.delete('/schools', { data: { id: itemToDelete.id } })
+            setHideWarning(false)
+            dispatch(fetchAllSchools())
+        } catch (error) {
+            console.error('Ошибка при удалении школы:', error)
         }
     }
-   
-
-
+    const onDeleteSchool = (school, e) => {
+        e.stopPropagation() // Предотвращаем всплытие события
+        setHideWarning(true)
+        setItemToDelete(school)
+    }
 
     return (
-        <div className="timetable-nav-dropdown-school" ref={schoolRef}>
-            <button className="timetable-nav-dropdown-school-toggle" onClick={() => openSchoolHandler()} >
-                {selectedSchool}
-                <span className="timetable-nav-arrow">▼</span>
+        <div className="dropdown" ref={schoolRef}>
+            {hideWarning && (
+                <Warning
+                    message={`Удалить школу "${itemToDelete.name}"?`}
+                    onConfirm={handleSchoolDelete}
+                    onCancel={hideWarningHandler}
+                />
+            )}
+            <button
+                className="dropdown-toggle"
+                onClick={openSchoolHandler}
+            >
+                {selectedSchool.name || "Все школы"}
+                <span className="dropdown-arrow">▼</span>
             </button>
             {isOpenSchool && (
-                <ul className="timetable-nav-dropdown-school-menu">
-                    <li onClick={(e) => inputToggleHandlerSchool()} className="timetable-nav-dropdown-group-item timetable-nav-add">
-                        <button className='timetable-nav-add-button'><i className="fa-solid fa-plus"></i></button>
+                <ul className="dropdown-menu">
+                    <li className="dropdown-item add" onClick={inputToggleHandlerSchool}>
+                        <button className='btn-action btn-add'>
+                            <i className="fa-solid fa-plus"></i>
+                        </button>
                     </li>
-                    {inputToggleSchool &&
-                        <li className="timetable-nav-dropdown-group-item">
-                            <input className='timetable-nav-dropdown-input' type="text" placeholder='Добавить...' />
+                    {inputToggleSchool && (
+                        <li className="dropdown-item">
+                            <div className="input-group">
+                                <input
+                                    className='input'
+                                    type="text"
+                                    placeholder='Добавить школу...'
+                                    value={newSchoolName}
+                                    onChange={(e) => setNewSchoolName(e.target.value)}
+                                    onKeyPress={handleKeyPress}
+                                />
+                                <button
+                                    className='btn-action btn-add'
+                                    onClick={handleCreateSchool}
+                                    disabled={!newSchoolName.trim()}
+                                >
+                                    <i className="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
                         </li>
-                    }
-                    <li onClick={() => handleSchoolSelect("Все школы")} className="timetable-nav-dropdown-school-item">
+                    )}
+                    <li className="dropdown-item" onClick={() => handleSchoolSelect("Все школы")}>
                         Все школы
                     </li>
-                    {items.map((school) => (
-                        <li key={school.id} onClick={() => handleSchoolSelect(school)} className="timetable-nav-dropdown-school-item">
-                            <p>{school.name}</p>
-                            <button onClick={(e) => onDeleteButtton(school)} className='timetable-nav-delete'><i className="fa-solid fa-minus"></i></button>
+                    {schools.map((school) => (
+                        <li
+                            key={school.id}
+                            className="dropdown-item"
+                            onClick={() => handleSchoolSelect(school)}
+                        >
+                            <span>{school.name}</span>
+                            <button
+                                className='btn-action btn-delete'
+                                onClick={(e) => onDeleteSchool(school, e)}
+                            >
+                                <i className="fa-solid fa-minus"></i>
+                            </button>
                         </li>
                     ))}
                 </ul>

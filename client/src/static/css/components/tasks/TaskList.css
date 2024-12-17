@@ -1,115 +1,196 @@
+/* TaskList.css */
 :root {
-    --border-radius-sm: 5px;
-    --border-radius-lg: 20px;
-    --shadow-default: 0px 4px 8px 2px rgba(34, 60, 80, 0.2);
-    --color-error: #d12626;
-    --color-error-dark: #962323;
-    --color-bg: #f1f1f1;
-    --spacing-base: 8px;
-    --task-width: min(95%, 1200px);
-    --task-height: clamp(45px, 8vh, 60px);
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 16px;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+    --color-error: #dc3545;
+    --color-error-dark: #bd2130;
+    --color-bg: #f8f9fa;
+    --color-text: #212529;
+    --color-border: #dee2e6;
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
 }
 
-/* Общий контейнер списка */
-.task-list {
-    box-sizing: border-box;
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+
+
+.tasks-container {
     width: 100%;
-    flex: 1;
-    overflow-y: auto;
-    padding: var(--spacing-base);
-    gap: var(--spacing-base);
-    min-height: 0; /* Важно для корректной работы overflow */
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: var(--spacing-md);
+    overflow-y: scroll;
 }
-
-/* Стили скроллбара */
-.task-list::-webkit-scrollbar{
+.tasks-container::-webkit-scrollbar{
     border-radius: 5px;
     width: 7px;
     background-color: #f1f1f1;
 }
-.task-list::-webkit-scrollbar-thumb{
+.tasks-container::-webkit-scrollbar-thumb{
     border-radius: 5px;
     background-color: #707070;
 }
+.tasks-header {
+    background-color: #fff;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+}
 
+.tasks-sort-controls {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
 
+.sort-button {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
 
-/* Элемент задачи */
-.task-elem {
-    box-sizing: border-box;
+.sort-button:hover {
+    background-color: var(--color-bg);
+}
+
+.sort-button.active {
+    background-color: var(--color-text);
+    color: white;
+}
+
+.tasks-list {
     display: grid;
-    grid-template-columns: 5fr 1fr 2fr 1fr; /* Те же пропорции, что и в header */
-    width: var(--task-width);
-    height: var(--task-height);
-    padding: 0 var(--spacing-base);
+    gap: var(--spacing-md);
+    padding: 0;
+    list-style: none;
+}
+
+.task-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    gap: var(--spacing-md);
+    align-items: center;
+    padding: var(--spacing-md);
     background-color: #fff;
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-default);
-    align-items: center;
+    box-shadow: var(--shadow-sm);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.task-elem:hover {
+.task-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-md);
 }
 
-/* Общие стили для элементов в task-elem */
-.task-title,
-.task-time,
-.task-date {
-    padding: 0 var(--spacing-base);
-    font-size: clamp(12px, 1.2vw, 14px);
-    text-align: center;
-    justify-self: center;
-    width: 100%;
+.task-content {
+    overflow: hidden;
 }
 
-/* Специальные стили для заголовка */
 .task-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.task-time,
+.task-date {
+    font-size: 0.9rem;
+    color: #666;
     white-space: nowrap;
 }
 
-/* Кнопка удаления */
-.task-delete {
-    width: clamp(25px, 4vw, 30px);
-    height: clamp(25px, 4vw, 30px);
+.delete-button {
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     border: 1px solid var(--color-error);
-    background-color: #fff;
+    background-color: transparent;
     color: var(--color-error);
     cursor: pointer;
     transition: all 0.2s ease;
-    justify-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.task-delete:hover {
-    border-width: 2px;
+.delete-button:hover {
     background-color: var(--color-error);
-    color: #fff;
+    color: white;
 }
 
-.task-delete:active {
-    border-color: var(--color-error-dark);
+.delete-button:active {
     background-color: var(--color-error-dark);
+    border-color: var(--color-error-dark);
 }
 
-/* Медиа-запрос для мобильных устройств */
+/* Адаптивность */
 @media (max-width: 768px) {
-    .task-elem {
-        grid-template-columns: 4fr 1fr 1.5fr 0.8fr;
+    .tasks-container {
+        padding: var(--spacing-sm);
     }
-    
-    .task-title,
-    .task-time,
+
+    .task-item {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "title delete"
+            "time date";
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm);
+    }
+
+    .task-title {
+        grid-area: title;
+    }
+
+    .task-time {
+        grid-area: time;
+    }
+
     .task-date {
-        font-size: 12px;
+        grid-area: date;
     }
+
+    .delete-button {
+        grid-area: delete;
+    }
+}
+
+@media (max-width: 480px) {
+    .tasks-sort-controls {
+        flex-direction: column;
+    }
+
+    .sort-button {
+        width: 100%;
+        padding: var(--spacing-sm);
+    }
+}
+
+/* Стили для скроллбара */
+.tasks-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tasks-list::-webkit-scrollbar-track {
+    background: var(--color-bg);
+    border-radius: var(--border-radius-sm);
+}
+
+.tasks-list::-webkit-scrollbar-thumb {
+    background-color: #999;
+    border-radius: var(--border-radius-sm);
 }

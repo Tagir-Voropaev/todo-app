@@ -1,151 +1,125 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useCallback, useMemo } from 'react'
 import "../../../static/css/components/tasks/TaskList.css"
+import "../../../static/css/components/tasks/TaskSort.css"
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchTasks } from '../../../store/tasks/tasksSlice'
 import axios from '../../../axios'
 import Warning from '../../Warning'
-import "../../../static/css/components/tasks/TaskSort.css"
-const TaskList = () => {
 
-    // Существующие задачи
+const TaskList = () => {
     const dispatch = useDispatch();
-    //Получение задач
-    useEffect(() => {
-        dispatch(fetchTasks())
-    }, [dispatch])
     const { filtered, searchValue } = useSelector(state => state.searchTask);
     const { tasks } = useSelector(state => state.tasks);
+    const [sortedTasks, setSortedTasks] = React.useState([]);
+    const [sortConfig, setSortConfig] = React.useState({
+        field: null,
+        direction: 'asc'
+    });
+    const [warningState, setWarningState] = React.useState({
+        show: false,
+        itemToDelete: null
+    });
+
+    useEffect(() => {
+        dispatch(fetchTasks());
+    }, [dispatch]);
 
     useEffect(() => {
         if (searchValue) {
-            setSortedTasks(filtered)
+            setSortedTasks(filtered);
         } else if (tasks.status === 'loaded') {
-            setSortedTasks(tasks.items)
+            setSortedTasks(tasks.items);
         }
-    }, [tasks, filtered, searchValue])
+    }, [tasks, filtered, searchValue]);
 
-
-    const [sortedTasks, setSortedTasks] = useState([])
-    const [sortConfig, setSortConfig] = useState({
-        field: null,
-        direction: 'asc'
-    })
-
-    const [hideWarning, setHideWarning] = useState(false)
-    const [item, setItem] = useState({})
-    const hideWarningHandler = async (value) => {
-        setHideWarning(false)
-    }
-    const handleScriptDelete = async () => {
-        await axios.delete((`/tasks`), { data: { id: item.id }, })
-        setHideWarning(false)
-        dispatch(fetchTasks())
-
-    }
-    const onDeleteButtton = async (value) => {
-        setHideWarning(true)
-        setItem(value)
-
-    }
-
-    // Общая функция сортировки
-    const handleSort = (field) => {
-        let direction = 'asc';
-        if (sortConfig.field === field && sortConfig.direction === 'asc') {
-            direction = 'desc';
+    const handleScriptDelete = useCallback(async () => {
+        if (warningState.itemToDelete) {
+            await axios.delete('/tasks', { 
+                data: { id: warningState.itemToDelete.id } 
+            });
+            setWarningState({ show: false, itemToDelete: null });
+            dispatch(fetchTasks());
         }
+    }, [warningState.itemToDelete, dispatch]);
+
+    const handleSort = useCallback((field) => {
+        const direction = sortConfig.field === field && sortConfig.direction === 'asc' ? 'desc' : 'asc';
         setSortConfig({ field, direction });
 
-        const sorted = [...sortedTasks].sort((a, b) => {
-            if (field === 'title') {
-                return direction === 'asc' 
-                    ? a.title.localeCompare(b.title)
-                    : b.title.localeCompare(a.title);
-            }
-            
-            if (field === 'time') {
-                const timeA = a.timetask.split(':').map(Number);
-                const timeB = b.timetask.split(':').map(Number);
-                
-                if (timeA[0] === timeB[0]) {
-                    return direction === 'asc' 
-                        ? timeA[1] - timeB[1] 
-                        : timeB[1] - timeA[1];
-                }
-                return direction === 'asc' 
-                    ? timeA[0] - timeB[0] 
-                    : timeB[0] - timeA[0];
-            }
-            
-            if (field === 'date') {
+        const sortFunctions = {
+            title: (a, b) => direction === 'asc' 
+                ? a.title.localeCompare(b.title)
+                : b.title.localeCompare(a.title),
+            time: (a, b) => {
+                const [hoursA, minsA] = a.timetask.split(':').map(Number);
+                const [hoursB, minsB] = b.timetask.split(':').map(Number);
+                const timeCompare = hoursA === hoursB ? minsA - minsB : hoursA - hoursB;
+                return direction === 'asc' ? timeCompare : -timeCompare;
+            },
+            date: (a, b) => {
                 const dateA = new Date(a.datetask.split('.').reverse().join('-'));
                 const dateB = new Date(b.datetask.split('.').reverse().join('-'));
-                return direction === 'asc' 
-                    ? dateA - dateB 
-                    : dateB - dateA;
+                return direction === 'asc' ? dateA - dateB : dateB - dateA;
             }
-            return 0;
-        });
-        
-        setSortedTasks(sorted);
-    }
+        };
 
+        setSortedTasks(prev => [...prev].sort(sortFunctions[field]));
+    }, [sortConfig]);
 
-    // Получаем стрелку для кнопки сортировки
-    const getSortArrow = (field) => {
-        if (sortConfig.field === field) {
-            return sortConfig.direction === 'asc' ? ' ↑' : ' ↓';
-        }
-        return '';
-    }
-    
-     return (
-        <>
-            <div className="task-header">
-                <div className="task-header-block">
-                    <button 
-                        className={`task-sort-btn ${sortConfig.field === 'title' ? 'active' : ''}`}
-                        onClick={() => handleSort('title')}
-                    >
-                        Имя{getSortArrow('title')}
-                    </button>
-                    <button 
-                        className={`task-sort-btn ${sortConfig.field === 'time' ? 'active' : ''}`}
-                        onClick={() => handleSort('time')}
-                    >
-                        Время{getSortArrow('time')}
-                    </button>
-                    <button 
-                        className={`task-sort-btn ${sortConfig.field === 'date' ? 'active' : ''}`}
-                        onClick={() => handleSort('date')}
-                    >
-                        Дата{getSortArrow('date')}
-                    </button>
+    const getSortArrow = useCallback((field) => 
+        sortConfig.field === field ? (sortConfig.direction === 'asc' ? ' ↑' : ' ↓') : '', 
+    [sortConfig]);
+
+    const sortButtons = useMemo(() => (
+        <div className="tasks-sort-controls">
+            {['title', 'time', 'date'].map(field => (
+                <button 
+                    key={field}
+                    className={`sort-button ${sortConfig.field === field ? 'active' : ''}`}
+                    onClick={() => handleSort(field)}
+                >
+                    {field === 'title' ? 'Имя' : field === 'time' ? 'Время' : 'Дата'}
+                    {getSortArrow(field)}
+                </button>
+            ))}
+        </div>
+    ), [sortConfig, handleSort, getSortArrow]);
+
+    const taskItems = useMemo(() => 
+        tasks.status === 'loaded' && sortedTasks.map(item => (
+            <li key={item.id} className="task-item">
+                <div className="task-content">
+                    <h3 className="task-title">{item.title}</h3>
                 </div>
-            </div>
+                <span className="task-time">{item.timetask}</span>
+                <span className="task-date">{item.datetask}</span>
+                <button 
+                    className="delete-button"
+                    onClick={() => setWarningState({ show: true, itemToDelete: item })}
+                >
+                    <i className="fa-solid fa-trash"></i>
+                </button>
+            </li>
+        )),
+    [sortedTasks, tasks.status]);
 
-            <ul className="task-list">
-                {hideWarning && <Warning
-                    message={"Вы действительно хотите удалить эту задачу?"}
-                    onConfirm={handleScriptDelete}
-                    onCancel={hideWarningHandler}
-                />}
-                {tasks.status === 'loaded'
-                    ? sortedTasks.map(item => (
-                        <li key={item.id} className='task-elem'>
-                            <p className='task-title'>{item.title}</p>
-                            <p className='task-time'>{item.timetask}</p>
-                            <p className='task-date'>{item.datetask}</p>
-                            <button className='task-delete' onClick={e => onDeleteButtton(item)}>
-                                <i className="fa-solid fa-trash"></i>
-                            </button>
-                        </li>
-                    ))
-                    : (<h1>Loading...</h1>)
-                }
+    return (
+        <div className="tasks-container">
+            <header className="tasks-header">
+                {sortButtons}
+            </header>
+            <ul className="tasks-list">
+                {warningState.show && (
+                    <Warning
+                        message="Вы действительно хотите удалить эту задачу?"
+                        onConfirm={handleScriptDelete}
+                        onCancel={() => setWarningState({ show: false, itemToDelete: null })}
+                    />
+                )}
+                {tasks.status === 'loaded' ? taskItems : <h1>Loading...</h1>}
             </ul>
-        </>
-    )
-}
+        </div>
+    );
+};
 
-export default TaskList
+export default React.memo(TaskList);

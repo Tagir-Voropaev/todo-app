@@ -1,97 +1,194 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllSchools } from '../../../store/timetable/allSchoolsSlice';
+import React, { useEffect, useRef, useCallback, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchAllGroups } from '../../../store/timetable/allGroupsSlice'
+import { fetchCreateGroup } from '../../../store/timetable/createGroupSlice'
+import {
+    toggleGroupDropdown,
+    setSelectedGroup,
+    toggleGroupInput,
+    toggleSchoolInput
+} from '../../../store/timetable/timetableNavSlice'
+import axios from '../../../axios'
+import Warning from '../../Warning'
 
-
-const TimetableNavGroups = ({ setIsOpenSchool, setSelectedSchool }) => {
-
+const TimetableNavGroups = () => {
     const dispatch = useDispatch()
-    const [isOpenGroup, setIsOpenGroup] = useState(false);
-    const groupRef = useRef(null);
-    const [selectedGroup, setSelectedGroup] = useState('Все группы');
-    const [inputToggleSchool, setInputToggleSchool] = useState(false);
-    const [inputToggleGroup, setInputToggleGroup] = useState(false);
+    const groupRef = useRef(null)
+    const [newGroupName, setNewGroupName] = useState('')
 
-    useEffect(() => {
-        dispatch(fetchAllSchools());
-    }, [dispatch]);
-
-    const data = useSelector(state => state.schools);
-
-    // Пример списка школ (в реальном приложении данные могут приходить с сервера)
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            // Закрытие меню групп
-            if (groupRef.current && !groupRef.current.contains(event.target)) {
-                setIsOpenGroup(false);
-                setInputToggleGroup(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-    // const schools = [
-    //     'Школа №1',
-    //     'Школа №2',
-    //     'Школа №3',
-    //     'Гимназия №5',
-    //     'Лицей №7'
-    // ];
-
-    const groups = [
-        '10А',
-        '10Б',
-        '10В',
-        '11А',
-        '11Б'
-    ];
+    const [hideWarning, setHideWarning] = useState(false)
+    const [itemToDelete, setItemToDelete] = useState({})
 
 
-    const handleGroupSelect = (group) => {
-        setSelectedGroup(group);
-        setIsOpenGroup(false);
-    };
-
-    const onDeleteButtton = (item) => {
-        console.log(item)
+    const {
+        isOpenGroup,
+        selectedSchool,
+        selectedGroup,
+        inputToggleGroup,
+        inputToggleSchool
+    } = useSelector(state => state.timetableNav) || {
+        isOpenGroup: false,
+        selectedSchool: 'Все школы',
+        selectedGroup: 'Все группы',
+        inputToggleGroup: false,
+        inputToggleSchool: false
     }
 
-    const inputToggleHandlerGroup = async () => {
+    const { items: groups = [] } = useSelector(state => state.allgroups) || {}
+    const { status: createStatus } = useSelector(state => state.createGroup)
 
-        setInputToggleGroup((e) => !e)
+    useEffect(() => {
+        dispatch(fetchAllGroups())
+    }, [dispatch])
+
+    // Обновляем список групп после успешного создания
+    useEffect(() => {
+        if (createStatus === 'loaded') {
+            dispatch(fetchAllGroups())
+            setNewGroupName('')
+            dispatch(toggleGroupInput(false))
+        }
+    }, [createStatus, dispatch])
+
+    const handleClickOutside = useCallback((event) => {
+        if (groupRef.current && !groupRef.current.contains(event.target)) {
+            dispatch(toggleGroupDropdown(false))
+            dispatch(toggleGroupInput(false))
+        }
+    }, [dispatch])
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [handleClickOutside])
+
+    const getSelectedSchoolGroups = useCallback(() => {
+        if (selectedSchool === 'Все школы') return []
+        return groups.filter(group => group.schoolId === selectedSchool.id)
+    }, [selectedSchool, groups])
+
+    const handleGroupSelect = useCallback((group) => {
+        const groupName = typeof group === 'string' ? group : group.name
+        dispatch(setSelectedGroup(groupName))
+        dispatch(toggleGroupDropdown(false))
+    }, [dispatch])
+
+    const openGroupHandler = useCallback(() => {
+        dispatch(toggleGroupDropdown(!isOpenGroup))
+    }, [dispatch, isOpenGroup])
+
+    const inputToggleHandlerGroup = useCallback(() => {
+        dispatch(toggleGroupInput(!inputToggleGroup))
         if (inputToggleSchool) {
-            setInputToggleSchool(false)
+            dispatch(toggleSchoolInput(false))
+        }
+    }, [dispatch, inputToggleGroup, inputToggleSchool])
+
+    const handleCreateGroup = useCallback(() => {
+        if (newGroupName.trim() && selectedSchool.id) {
+            dispatch(fetchCreateGroup({
+                name: newGroupName.trim(),
+                schoolId: selectedSchool.id
+            }))
+        }
+    }, [dispatch, newGroupName, selectedSchool])
+
+    const handleKeyPress = useCallback((e) => {
+        if (e.key === 'Enter') {
+            handleCreateGroup()
+        }
+    }, [handleCreateGroup])
+
+
+    const hideWarningHandler = () => {
+        setHideWarning(false)
+    }
+
+    const handleGroupDelete = async () => {
+        try {
+            await axios.delete('/groups', { data: { id: itemToDelete.id } })
+            setHideWarning(false)
+            dispatch(fetchAllGroups())
+        } catch (error) {
+            console.error('Ошибка при удалении группы:', error)
         }
     }
 
-
+    const onDeleteGroup = (group, e) => {
+        e.stopPropagation()
+        setHideWarning(true)
+        setItemToDelete(group)
+        dispatch(toggleGroupDropdown(false))
+    }
     return (
-        <div className="timetable-nav-dropdown-group" ref={groupRef}>
-            <button className="timetable-nav-dropdown-group-toggle" onClick={() => setIsOpenGroup(!isOpenGroup)} >
+        <div className="dropdown" ref={groupRef}>
+            {hideWarning && (
+                <Warning
+                    message={`Удалить группу "${itemToDelete.name}"?`}
+                    onConfirm={handleGroupDelete}
+                    onCancel={hideWarningHandler}
+                />
+            )}
+            <button 
+                className="dropdown-toggle"
+                onClick={openGroupHandler}
+                disabled={selectedSchool === 'Все школы'}
+            >
                 {selectedGroup}
-                <span className="timetable-nav-arrow">▼</span>
+                <span className="dropdown-arrow">▼</span>
             </button>
             {isOpenGroup && (
-                <ul className="timetable-nav-dropdown-group-menu">
-                    <li onClick={(e) => inputToggleHandlerGroup()} className="timetable-nav-dropdown-group-item timetable-nav-add">
-                        <button className='timetable-nav-add-button'><i className="fa-solid fa-plus"></i></button>
+                <ul className="dropdown-menu">
+                    <li className="dropdown-item add" onClick={inputToggleHandlerGroup}>
+                        <button className='btn-action btn-add'>
+                            <i className="fa-solid fa-plus"></i>
+                        </button>
                     </li>
-                    {inputToggleGroup &&
-                        <li className="timetable-nav-dropdown-group-item">
-                            <input className='timetable-nav-dropdown-input' type="text" placeholder='Добавить...' />
+                    {inputToggleGroup && (
+                        <li className="dropdown-item">
+                            <div className="input-group">
+                                <input 
+                                    className='input'
+                                    type="text" 
+                                    placeholder='Добавить группу...'
+                                    value={newGroupName}
+                                    onChange={(e) => setNewGroupName(e.target.value)}
+                                    onKeyPress={handleKeyPress}
+                                />
+                                <button 
+                                    className='btn-action btn-add'
+                                    onClick={handleCreateGroup}
+                                    disabled={!newGroupName.trim()}
+                                >
+                                    <i className="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
                         </li>
-                    }
-                    <li onClick={() => handleGroupSelect("Все группы")} className="timetable-nav-dropdown-group-item">
+                    )}
+                    <li className="dropdown-item" onClick={() => handleGroupSelect("Все группы")}>
                         Все группы
                     </li>
-                    {groups.map((group, index) => (
-                        <li key={index} onClick={() => handleGroupSelect(group)} className="timetable-nav-dropdown-group-item">
-                            <p>{group}</p>
-                            <button onClick={(e) => onDeleteButtton(group)} className='timetable-nav-delete'><i className="fa-solid fa-minus"></i></button>
+                    {getSelectedSchoolGroups().length > 0 ? (
+                        getSelectedSchoolGroups().map((group) => (
+                            <li 
+                                key={group.id} 
+                                className="dropdown-item"
+                                onClick={() => handleGroupSelect(group)}
+                            >
+                                <span>{group.name}</span>
+                                <button 
+                                    className='btn-action btn-delete'
+                                    onClick={(e) => onDeleteGroup(group, e)}
+                                >
+                                    <i className="fa-solid fa-minus"></i>
+                                </button>
+                            </li>
+                        ))
+                    ) : (
+                        <li className="dropdown-item disabled">
+                            <span>Нет доступных групп</span>
                         </li>
-                    ))}
+                    )}
                 </ul>
             )}
         </div>
