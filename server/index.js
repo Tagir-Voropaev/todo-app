@@ -11,14 +11,15 @@ import {
 import { createTask, getAllTasks, deleteTask, editTask } from './controllers/TaskController.js';
 import { createScript, createSubTab, createTab, deleteScript, deleteSubTab, deleteTab, getAllScripts, getAllTabs, getScripts } from './controllers/ScriptController.js';
 import { getAllSchools, getAllGroups, getAllLessons, getSchoolById, getGroupById } from './controllers/SchoolController.js';
-import { addSchool, addGroup, addLesson } from './controllers/SchoolController.js';
+import { addSchool, addGroup, addLesson, deleteSchool, deleteGroup, deleteLesson } from './controllers/SchoolController.js';
 
 
 
-const PORT = 5000;
+const PORT = 5000; // В production используем случайный порт
+
 //Проверка подключения бд
 try {
-    //Dev-mode: пересоздание таблицы при запуске сервера
+    // Dev-mode: пересоздание таблицы при запуске сервера
     // (async () => { await sequelize.sync({ force: true }) })() 
     //Dev-mode: Проверка наличия таблицы при запуске сервера
     (async () => { await sequelize.sync({}) })()
@@ -28,15 +29,14 @@ try {
     console.log('DB is BAD ', e)
 }
 
+
+
 //Инициализация сервера
 const app = express();
 
 //Формат чтения
 app.use(express.json());
 app.use(cors());
-
-app.get('/', (req, res) => { res.send("Hello") })
-
 
 
 
@@ -68,15 +68,14 @@ app.get('/lessons', getAllLessons)
 app.post('/schools', schoolCreateValidation, validationError, addSchool)
 app.post('/groups', schoolCreateValidation, validationError, addGroup)
 app.post('/lessons', validationError, addLesson)
-
+app.delete('/schools', deleteSchool)
+app.delete('/groups', deleteGroup)
+app.delete('/lessons', deleteLesson)
 
 
 
 //Запуск сервера
-app.listen(PORT, (err) => {
-    if (err) {
-        return console.log(err)
-    }
+app.listen(PORT, '127.0.0.1', () => {
     console.log(`Server OK ${PORT}`)
-
 })
+

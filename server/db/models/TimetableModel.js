@@ -44,8 +44,8 @@ export const LessonModel = sequelize.define('LessonModel',
             type: DataTypes.INTEGER,
             allowNull: false,
             validate: {
-                min: 0,
-                max: 6
+                min: 1,
+                max: 7
             }
         },
         startTime: {
@@ -58,7 +58,7 @@ export const LessonModel = sequelize.define('LessonModel',
         },
         room: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         groupId: {
             type: DataTypes.INTEGER,

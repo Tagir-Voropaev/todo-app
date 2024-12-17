@@ -38,6 +38,7 @@ export const getAllGroups = async (req, res) => {
     res.json(groups)
 }
 
+// server/controllers/SchoolController.js
 export const getGroupById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -54,10 +55,6 @@ export const getGroupById = async (req, res) => {
                 {
                     model: SchoolModel,  // включаем данные о школе
                     attributes: ['id', 'name'] // выбираем только нужные поля школы
-                },
-                {
-                    model: LessonModel,  // включаем данные о занятиях
-                    attributes: ['id', 'startTime', 'endTime', 'room', 'groupId']
                 }
             ]
         });
@@ -74,9 +71,24 @@ export const getGroupById = async (req, res) => {
     }
 };
 
+// server/controllers/SchoolController.js
 export const getAllLessons = async (req, res) => {
-    const lessons = await LessonModel.findAll()
-    res.json(lessons)
+    try {
+        const lessons = await LessonModel.findAll({
+            include: [{
+                model: GroupModel,
+                include: [{
+                    model: SchoolModel,
+                    attributes: ['id', 'name']
+                }],
+                attributes: ['id', 'name']
+            }]
+        });
+        res.json(lessons);
+    } catch (error) {
+        console.error('Ошибка при получении занятий:', error);
+        res.status(500).json({ message: 'Ошибка при получении занятий' });
+    }
 }
 
 // Добавление школы
@@ -174,9 +186,9 @@ export const addLesson = async (req, res) => {
         }
 
         // Проверяем, что день недели в правильном диапазоне (0-6)
-        if (dayOfWeek < 0 || dayOfWeek > 6) {
+        if (dayOfWeek < 1 || dayOfWeek > 7) {
             return res.status(400).json({ 
-                message: 'День недели должен быть от 0 до 6' 
+                message: 'День недели должен быть от 1 до 7' 
             });
         }
 
@@ -205,3 +217,44 @@ export const addLesson = async (req, res) => {
         res.status(500).json({ message: 'Ошибка при создании занятия' });
     }
 };
+
+export const deleteSchool = async (req, res) => {
+    try {
+
+        const schoolid = req.body.id
+        await SchoolModel.destroy({ where: { id: schoolid } });
+        res.json(schoolid);
+    } catch (error) {
+        console.log(error)
+        res.status(404).json({
+            message: 'Не удалось удалить школу.'
+        })
+    }
+}
+
+export const deleteGroup = async (req, res) => {
+    try {
+
+        const groupid = req.body.id
+        await GroupModel.destroy({ where: { id: groupid } });
+        res.json(groupid);
+    } catch (error) {
+        console.log(error)
+        res.status(404).json({
+            message: 'Не удалось удалить группу.'
+        })
+    }
+}
+
+export const deleteLesson = async (req, res) => {
+    try {
+        const lessonid = req.body.id
+        await LessonModel.destroy({ where: { id: lessonid } });
+        res.json(lessonid);
+    } catch (error) {
+        console.log(error)
+        res.status(404).json({
+            message: 'Не удалось удалить занятие.'
+        })
+    }
+}
