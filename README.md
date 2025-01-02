@@ -1,4 +1,13 @@
 # todo-app
 
-Это приложение написано на React JS (Frontend) и NodeJS (Backend).
-База данных SQLite.
+Фронтенд:
+- React
+- Redux
+- React Hook Form
+
+Бэкенд:
+- Node JS
+- Express JS
+- Sequelize ORM
+- SQLite
+
