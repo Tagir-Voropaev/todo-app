@@ -17,17 +17,17 @@ import { addSchool, addGroup, addLesson, deleteSchool, deleteGroup, deleteLesson
 
 const PORT = 5000; // В production используем случайный порт
 
-//Проверка подключения бд
-try {
-    // Dev-mode: пересоздание таблицы при запуске сервера
-    // (async () => { await sequelize.sync({ force: true }) })() 
-    //Dev-mode: Проверка наличия таблицы при запуске сервера
-    (async () => { await sequelize.sync({}) })()
-    await sequelize.authenticate()
-    console.log('DB is OK')
-} catch (e) {
-    console.log('DB is BAD ', e)
-}
+// //Проверка подключения бд
+// try {
+//     // Dev-mode: пересоздание таблицы при запуске сервера
+//     // (async () => { await sequelize.sync({ force: true }) })() 
+//     //Dev-mode: Проверка наличия таблицы при запуске сервера
+//     (async () => { await sequelize.sync({}) })()
+//     await sequelize.authenticate()
+//     console.log('DB is OK')
+// } catch (e) {
+//     console.log('DB is BAD ', e)
+// }
 
 
 
@@ -40,37 +40,37 @@ app.use(cors());
 
 
 
-// ======================= TASKS ========================
-app.get('/tasks', getAllTasks)
-app.post('/tasks', taskCreateValidation, validationError, createTask)
-app.delete('/tasks', deleteTask)
-app.patch('/tasks', taskCreateValidation, validationError, editTask)
+// // ======================= TASKS ========================
+// app.get('/tasks', getAllTasks)
+// app.post('/tasks', taskCreateValidation, validationError, createTask)
+// app.delete('/tasks', deleteTask)
+// app.patch('/tasks', taskCreateValidation, validationError, editTask)
 
-// ======================= SCRIPTS ========================
-app.get('/scripts/tabs', getAllTabs)
-app.post('/scripts/tabs', tabCreateValidation, validationError, createTab);
-app.delete('/scripts/tabs', deleteTab)
+// // ======================= SCRIPTS ========================
+// app.get('/scripts/tabs', getAllTabs)
+// app.post('/scripts/tabs', tabCreateValidation, validationError, createTab);
+// app.delete('/scripts/tabs', deleteTab)
 
-app.post('/scripts/subtabs', tabCreateValidation, validationError, createSubTab);
-app.delete('/scripts/subtabs', deleteSubTab)
+// app.post('/scripts/subtabs', tabCreateValidation, validationError, createSubTab);
+// app.delete('/scripts/subtabs', deleteSubTab)
 
-app.get('/scripts/subtab/', getAllScripts)
-app.get('/scripts/subtab/:id', getScripts)
-app.post('/scripts/subtab/:id', scriptCreateValidation, validationError, createScript);
-app.delete('/scripts/subtab/:id', deleteScript)
+// app.get('/scripts/subtab/', getAllScripts)
+// app.get('/scripts/subtab/:id', getScripts)
+// app.post('/scripts/subtab/:id', scriptCreateValidation, validationError, createScript);
+// app.delete('/scripts/subtab/:id', deleteScript)
 
-// ======================= SCHOOL ========================
-app.get('/schools', getAllSchools)
-app.get('/schools/:id', getSchoolById);
-app.get('/groups', getAllGroups)
-app.get('/groups/:id', getGroupById)
-app.get('/lessons', getAllLessons)
-app.post('/schools', schoolCreateValidation, validationError, addSchool)
-app.post('/groups', schoolCreateValidation, validationError, addGroup)
-app.post('/lessons', validationError, addLesson)
-app.delete('/schools', deleteSchool)
-app.delete('/groups', deleteGroup)
-app.delete('/lessons', deleteLesson)
+// // ======================= SCHOOL ========================
+// app.get('/schools', getAllSchools)
+// app.get('/schools/:id', getSchoolById);
+// app.get('/groups', getAllGroups)
+// app.get('/groups/:id', getGroupById)
+// app.get('/lessons', getAllLessons)
+// app.post('/schools', schoolCreateValidation, validationError, addSchool)
+// app.post('/groups', schoolCreateValidation, validationError, addGroup)
+// app.post('/lessons', validationError, addLesson)
+// app.delete('/schools', deleteSchool)
+// app.delete('/groups', deleteGroup)
+// app.delete('/lessons', deleteLesson)
 
 
 
