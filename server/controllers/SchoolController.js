@@ -1,4 +1,7 @@
-import { SchoolModel, GroupModel, LessonModel } from '../db/models/TimetableModel.js'
+// import { SchoolModel, GroupModel, LessonModel } from '../db/models/TimetableModel.js'
+
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient();
 
 export const getAllSchools = async (req, res) => {
     const schools = await SchoolModel.findAll()

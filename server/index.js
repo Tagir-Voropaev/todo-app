@@ -1,5 +1,6 @@
 import express from 'express'
-import sequelize from './db/database.js'
+// import sequelize from './db/database.js'
+import { PrismaClient } from '@prisma/client'
 import cors from 'cors'
 import validationError from './utils/validationError.js';
 import {
@@ -8,7 +9,7 @@ import {
     taskCreateValidation,
     schoolCreateValidation,
 } from './validations/validations.js';
-import { createTask, getAllTasks, deleteTask, editTask } from './controllers/TaskController.js';
+import { createTask, getAllTasks, deleteTask } from './controllers/TaskController.js';
 import { createScript, createSubTab, createTab, deleteScript, deleteSubTab, deleteTab, getAllScripts, getAllTabs, getScripts } from './controllers/ScriptController.js';
 import { getAllSchools, getAllGroups, getAllLessons, getSchoolById, getGroupById } from './controllers/SchoolController.js';
 import { addSchool, addGroup, addLesson, deleteSchool, deleteGroup, deleteLesson } from './controllers/SchoolController.js';
@@ -17,12 +18,23 @@ import { addSchool, addGroup, addLesson, deleteSchool, deleteGroup, deleteLesson
 
 const PORT = 5000; // В production используем случайный порт
 
-// //Проверка подключения бд
+//Проверка подключения бд
+const prisma = new PrismaClient();
+
+try {
+    // Установите соединение с базой данных
+    await prisma.$connect();
+    console.log('Подключение к базе данных успешно!');
+} catch (error) {
+    console.error('Ошибка при подключении к базе данных:', error);
+}
+
+
 // try {
 //     // Dev-mode: пересоздание таблицы при запуске сервера
-//     // (async () => { await sequelize.sync({ force: true }) })() 
+//     (async () => { await sequelize.sync({ force: true }) })() 
 //     //Dev-mode: Проверка наличия таблицы при запуске сервера
-//     (async () => { await sequelize.sync({}) })()
+//     // (async () => { await sequelize.sync({}) })()
 //     await sequelize.authenticate()
 //     console.log('DB is OK')
 // } catch (e) {
@@ -40,37 +52,36 @@ app.use(cors());
 
 
 
-// // ======================= TASKS ========================
-// app.get('/tasks', getAllTasks)
-// app.post('/tasks', taskCreateValidation, validationError, createTask)
-// app.delete('/tasks', deleteTask)
-// app.patch('/tasks', taskCreateValidation, validationError, editTask)
+// ======================= TASKS ========================
+app.get('/tasks', getAllTasks)
+app.post('/tasks', taskCreateValidation, validationError, createTask)
+app.delete('/tasks', deleteTask)
 
-// // ======================= SCRIPTS ========================
-// app.get('/scripts/tabs', getAllTabs)
-// app.post('/scripts/tabs', tabCreateValidation, validationError, createTab);
-// app.delete('/scripts/tabs', deleteTab)
+// ======================= SCRIPTS ========================
+app.get('/scripts/tabs', getAllTabs)
+app.post('/scripts/tabs', tabCreateValidation, validationError, createTab);
+app.delete('/scripts/tabs', deleteTab)
 
-// app.post('/scripts/subtabs', tabCreateValidation, validationError, createSubTab);
-// app.delete('/scripts/subtabs', deleteSubTab)
+app.post('/scripts/subtabs', tabCreateValidation, validationError, createSubTab);
+app.delete('/scripts/subtabs', deleteSubTab)
 
-// app.get('/scripts/subtab/', getAllScripts)
-// app.get('/scripts/subtab/:id', getScripts)
-// app.post('/scripts/subtab/:id', scriptCreateValidation, validationError, createScript);
-// app.delete('/scripts/subtab/:id', deleteScript)
+app.get('/scripts/subtab/', getAllScripts)
+app.get('/scripts/subtab/:id', getScripts)
+app.post('/scripts/subtab/:id', scriptCreateValidation, validationError, createScript);
+app.delete('/scripts/subtab/:id', deleteScript)
 
-// // ======================= SCHOOL ========================
-// app.get('/schools', getAllSchools)
-// app.get('/schools/:id', getSchoolById);
-// app.get('/groups', getAllGroups)
-// app.get('/groups/:id', getGroupById)
-// app.get('/lessons', getAllLessons)
-// app.post('/schools', schoolCreateValidation, validationError, addSchool)
-// app.post('/groups', schoolCreateValidation, validationError, addGroup)
-// app.post('/lessons', validationError, addLesson)
-// app.delete('/schools', deleteSchool)
-// app.delete('/groups', deleteGroup)
-// app.delete('/lessons', deleteLesson)
+// ======================= SCHOOL ========================
+app.get('/schools', getAllSchools)
+app.get('/schools/:id', getSchoolById);
+app.get('/groups', getAllGroups)
+app.get('/groups/:id', getGroupById)
+app.get('/lessons', getAllLessons)
+app.post('/schools', schoolCreateValidation, validationError, addSchool)
+app.post('/groups', schoolCreateValidation, validationError, addGroup)
+app.post('/lessons', validationError, addLesson)
+app.delete('/schools', deleteSchool)
+app.delete('/groups', deleteGroup)
+app.delete('/lessons', deleteLesson)
 
 
 

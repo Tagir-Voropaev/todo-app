@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TaskModel {
+  id       Int    @id @default(autoincrement())
+  title    String
+  timetask String
+  datetask String
+}
+
+model TabModel {
+  id      Int           @id @default(autoincrement())
+  text    String
+  subtabs SubTabModel[]
+}
+
+model SubTabModel {
+  id      Int           @id @default(autoincrement())
+  text    String
+  tabId   Int
+  scripts ScriptModel[]
+  tab     TabModel      @relation(fields: [tabId], references: [id])
+}
+
+model ScriptModel {
+  id       Int         @id @default(autoincrement())
+  subtabId Int
+  text     String
+  subtab   SubTabModel @relation(fields: [subtabId], references: [id])
+}
+
+model SchoolModel {
+  id     Int          @id @default(autoincrement())
+  name   String
+  groups GroupModel[]
+}
+
+model GroupModel {
+  id          Int           @id @default(autoincrement())
+  schoolId    Int
+  name        String
+  school      SchoolModel   @relation(fields: [schoolId], references: [id])
+  LessonModel LessonModel[]
+}
+
+model LessonModel {
+  id        Int        @id @default(autoincrement())
+  groupId   Int
+  name      String
+  dayOfWeek Int
+  startTime String
+  endTime   String
+  room      String
+  group     GroupModel @relation(fields: [groupId], references: [id])
+}
