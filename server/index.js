@@ -24,7 +24,7 @@ const prisma = new PrismaClient();
 try {
     // Установите соединение с базой данных
     await prisma.$connect();
-    console.log('Подключение к базе данных успешно!');
+    console.log('Подключение к базе данных успешно! Тимерхан');
 } catch (error) {
     console.error('Ошибка при подключении к базе данных:', error);
 }
