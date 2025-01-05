@@ -9,7 +9,7 @@ const Header = () => {
             <Link className={s.avatar} to="/">
                 <img className={s.avatarImg} src={defaultAvatar} alt="" />
             </Link>
-            <p className={s.name}>Name Surname</p>
+            <p className={s.name}>Name SurnameAAA</p>
             <p className={s.email}>example@email.com</p>
             <ul className={s.navLinks}>
                 <li className={s.navLinkElem}>
