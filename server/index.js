@@ -88,6 +88,6 @@ app.delete('/lessons', deleteLesson)
 
 //Запуск сервера
 app.listen(PORT, '127.0.0.1', () => {
-    console.log(`Server OK ${PORT}`)
+    console.log(`Server OK Тимерхан ${PORT}`)
 })
 
