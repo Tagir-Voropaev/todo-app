@@ -62,6 +62,7 @@ app.get('/scripts/tabs', getAllTabs)
 app.post('/scripts/tabs', tabCreateValidation, validationError, createTab);
 app.delete('/scripts/tabs', deleteTab)
 
+
 app.post('/scripts/subtabs', tabCreateValidation, validationError, createSubTab);
 app.delete('/scripts/subtabs', deleteSubTab)
 

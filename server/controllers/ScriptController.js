@@ -32,7 +32,7 @@ export const getAllScripts = async (req, res) => {
 export const getScripts = async (req, res) => {
     try {
         // const tasks = await TaskModel.findAll({ where: { user: req.userId } })// Получение задач определенного пользователя
-        const scripts = await prisma.scriptModel.findMany({ where: {subtabId: req.params.id}})// Получение задач определенного пользователя
+        const scripts = await prisma.scriptModel.findMany({ where: { subtabId: req.params.id } })// Получение задач определенного пользователя
         res.json(scripts);
     } catch (error) {
         console.log(error)
@@ -54,7 +54,8 @@ export const createTab = async (req, res) => {
         const newTab = await prisma.tabModel.create({
             data: {
                 text: req.body.text
-            }, });
+            },
+        });
 
         // Возвращаем созданный таб без сабтабов
         res.json(newTab);
@@ -76,7 +77,7 @@ export const createSubTab = async (req, res) => {
         }
 
         // Проверка на наличие таба с указанным ID
-        const existingTab = await prisma.tabModel.findMany({where: { id: tabid }});
+        const existingTab = await prisma.tabModel.findMany({ where: { id: tabid } });
         if (!existingTab) {
             return res.status(404).json({ message: 'Вкладки с таким ID не существует' });
         }
@@ -90,7 +91,7 @@ export const createSubTab = async (req, res) => {
         });
 
         // Получаем все сабтабы, принадлежащие этому табу
-        const subtabs = await prisma.subTabModel.findMany({ where: { tabId:tabid } });
+        const subtabs = await prisma.subTabModel.findMany({ where: { tabId: tabid } });
 
         // Возвращаем таб и все его сабтабы
         res.json({
@@ -110,12 +111,12 @@ export const createScript = async (req, res) => {
 
         // Проверка на наличие сабтаба с таким же текстом в указанном табе
         const existingScript = await prisma.scriptModel.findMany({ where: { text, subtabId } });
-        if (existingScript.length>0) {
+        if (existingScript.length > 0) {
             return res.status(400).json({ message: 'Скрипт с таким текстом уже существует в данной вкладке.' });
         }
 
         // Проверка на наличие таба с указанным ID
-        const existingSubTab = await prisma.subTabModel.findMany({where: { id: subtabId }});
+        const existingSubTab = await prisma.subTabModel.findMany({ where: { id: subtabId } });
         if (existingSubTab.length === 0) {
             return res.status(404).json({ message: 'Подвкладки с таким ID не существует' });
         }
@@ -125,9 +126,8 @@ export const createScript = async (req, res) => {
             data: {
                 text: text,
                 subtabId: subtabId
-            }, });
-
-       
+            },
+        });
 
         // Возвращаем таб и все его сабтабы
         res.json({

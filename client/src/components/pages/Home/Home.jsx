@@ -18,8 +18,6 @@ const Home = () => {
         dispatch(fetchAllLessons());
     }, [dispatch]);
 
-    console.log(items)
-
     const getTodayLessons = () => {
         const today = new Date();
         const dayOfWeek = today.getDay() || 7;

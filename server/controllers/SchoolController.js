@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient();
 
 export const getAllSchools = async (req, res) => {
-    const schools = await SchoolModel.findAll()
+    const schools = await prisma.schoolModel.findMany()
     res.json(schools)
 }
 
@@ -16,14 +16,11 @@ export const getSchoolById = async (req, res) => {
             return res.status(400).json({ message: 'ID школы должен быть числом' });
         }
         // Ищем школу по id
-        const school = await SchoolModel.findOne({
-            where: { id },
-            include: [{
-                model: GroupModel,
-                include: [{
-                    model: LessonModel
-                }]
-            }]
+        const school = await prisma.schoolModel.findMany({
+            where: { id: Number(id) },
+            include: {
+                groups: true,
+            },
         });
         // Если школа не найдена
         if (!school) {
@@ -37,7 +34,7 @@ export const getSchoolById = async (req, res) => {
 };
 
 export const getAllGroups = async (req, res) => {
-    const groups = await GroupModel.findAll()
+    const groups = await prisma.groupModel.findMany()
     res.json(groups)
 }
 
@@ -52,14 +49,11 @@ export const getGroupById = async (req, res) => {
         }
 
         // Ищем группу по id вместе со связанными данными
-        const group = await GroupModel.findOne({
-            where: { id },
-            include: [
-                {
-                    model: SchoolModel,  // включаем данные о школе
-                    attributes: ['id', 'name'] // выбираем только нужные поля школы
-                }
-            ]
+        const group = await prisma.groupModel.findMany({
+            where: { id: Number(id) },
+            include: {
+                school: true,
+            },
         });
 
         // Если группа не найдена
@@ -77,15 +71,14 @@ export const getGroupById = async (req, res) => {
 // server/controllers/SchoolController.js
 export const getAllLessons = async (req, res) => {
     try {
-        const lessons = await LessonModel.findAll({
-            include: [{
-                model: GroupModel,
-                include: [{
-                    model: SchoolModel,
-                    attributes: ['id', 'name']
-                }],
-                attributes: ['id', 'name']
-            }]
+        const lessons = await prisma.lessonModel.findMany({
+            include: {
+                group: {
+                    include: {
+                        school: true
+                    }
+                }
+            }
         });
         res.json(lessons);
     } catch (error) {
@@ -101,14 +94,16 @@ export const addSchool = async (req, res) => {
 
 
         // Проверка на существование школы с таким именем
-        const existingSchool = await SchoolModel.findOne({ where: { name } });
-        if (existingSchool) {
+        const existingSchool = await prisma.schoolModel.findMany({ where: { name } });
+        if (existingSchool.length > 0) {
             return res.status(400).json({ message: 'Школа с таким названием уже существует' });
         }
 
         // Создание школы
-        const school = await SchoolModel.create({ name });
-        
+        const school = await prisma.schoolModel.create({
+            data: { name }
+        });
+
         res.status(201).json(school);
     } catch (error) {
         res.status(500).json({ message: 'Ошибка при создании школы' });
@@ -123,44 +118,46 @@ export const addGroup = async (req, res) => {
 
         // Проверка наличия обязательных полей
         if (!name || !schoolId) {
-            return res.status(400).json({ 
-                message: 'Название группы и ID школы обязательны' 
+            return res.status(400).json({
+                message: 'Название группы и ID школы обязательны'
             });
         }
 
         // Проверяем, что schoolId является числом
         if (isNaN(schoolId)) {
-            return res.status(400).json({ 
-                message: 'ID школы должен быть числом' 
+            return res.status(400).json({
+                message: 'ID школы должен быть числом'
             });
         }
 
         // Проверяем существование школы
-        const school = await SchoolModel.findByPk(schoolId);
+        const school = await prisma.schoolModel.findMany({ where: { id: Number(schoolId) } }); // Проверяем существование школы по ID
         if (!school) {
-            return res.status(404).json({ 
-                message: 'Школа не найдена' 
+            return res.status(404).json({
+                message: 'Школа не найдена'
             });
         }
 
         // Проверка на существование группы с таким именем в этой школе
-        const existingGroup = await GroupModel.findOne({
-            where: { 
+        const existingGroup = await prisma.groupModel.findMany({
+            where: {
                 name,
-                schoolId 
+                schoolId
             }
         });
 
-        if (existingGroup) {
-            return res.status(400).json({ 
-                message: 'Группа с таким названием уже существует в этой школе' 
+        if (existingGroup.length > 0) {
+            return res.status(400).json({
+                message: 'Группа с таким названием уже существует в этой школе'
             });
         }
 
         // Создание группы
-        const group = await GroupModel.create({
-            name,
-            schoolId
+        const group = await prisma.groupModel.create({
+            data: {
+                name,
+                schoolId
+            }
         });
 
         res.status(201).json(group);
@@ -176,42 +173,44 @@ export const addLesson = async (req, res) => {
 
         // Проверка наличия обязательных полей
         if (!dayOfWeek || !startTime || !endTime || !room || !groupId) {
-            return res.status(400).json({ 
-                message: 'Заполните обязательные поля' 
+            return res.status(400).json({
+                message: 'Заполните обязательные поля'
             });
         }
 
         // Проверяем, что groupId является числом
         if (isNaN(groupId)) {
-            return res.status(400).json({ 
-                message: 'ID группы должен быть числом' 
+            return res.status(400).json({
+                message: 'ID группы должен быть числом'
             });
         }
 
         // Проверяем, что день недели в правильном диапазоне (0-6)
         if (dayOfWeek < 1 || dayOfWeek > 7) {
-            return res.status(400).json({ 
-                message: 'День недели должен быть от 1 до 7' 
+            return res.status(400).json({
+                message: 'День недели должен быть от 1 до 7'
             });
         }
 
         // Проверяем существование группы
-        const group = await GroupModel.findByPk(groupId);
+        const group = await prisma.groupModel.findMany({ where: { id: Number(groupId) } });
         if (!group) {
-            return res.status(404).json({ 
-                message: 'Группа не найдена' 
+            return res.status(404).json({
+                message: 'Группа не найдена'
             });
         }
 
-      
+
 
         // Создание занятия
-        const lesson = await LessonModel.create({
-            dayOfWeek,
-            startTime,
-            endTime,
-            room,
-            groupId
+        const lesson = await prisma.lessonModel.create({
+            data: {
+                dayOfWeek: dayOfWeek,
+                startTime: startTime,
+                endTime: endTime,
+                room: room,
+                groupId: groupId
+            }
         });
 
         res.status(201).json(lesson);
@@ -225,7 +224,7 @@ export const deleteSchool = async (req, res) => {
     try {
 
         const schoolid = req.body.id
-        await SchoolModel.destroy({ where: { id: schoolid } });
+        await prisma.schoolModel.delete({ where: { id: schoolid } });
         res.json(schoolid);
     } catch (error) {
         console.log(error)
@@ -239,7 +238,7 @@ export const deleteGroup = async (req, res) => {
     try {
 
         const groupid = req.body.id
-        await GroupModel.destroy({ where: { id: groupid } });
+        await prisma.groupModel.delete({ where: { id: groupid } });
         res.json(groupid);
     } catch (error) {
         console.log(error)
@@ -252,7 +251,7 @@ export const deleteGroup = async (req, res) => {
 export const deleteLesson = async (req, res) => {
     try {
         const lessonid = req.body.id
-        await LessonModel.destroy({ where: { id: lessonid } });
+        await prisma.lessonModel.delete({ where: { id: lessonid } });
         res.json(lessonid);
     } catch (error) {
         console.log(error)

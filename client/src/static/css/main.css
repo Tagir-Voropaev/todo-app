@@ -1,39 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 * {
     padding: 0;
     margin: 0;
-    font-family: Roboto;
+    font-family: "Montserrat", serif;
+    box-sizing: border-box;
 }
 body {
     min-width: 480px;
-    background-color: #f1f1f1;
+    background-color: #F5F8FF;
     height: 100vh;
 }
 a{
     text-decoration: none;
 }
+li{
+    list-style: none;
+}
+
 #root{
     height: 100%;
 }
-.App{
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-.content {
-    flex: 1;
-    padding: 20px;
-    overflow: hidden;
-}
+
 button, input{
     outline: none;
-}
-.window-block{
-    padding: 0 20px;
-}
-.wrapper{
-    height: 100%;
 }
 /* 
 Цвета

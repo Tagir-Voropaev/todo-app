@@ -42,17 +42,16 @@ model SchoolModel {
 }
 
 model GroupModel {
-  id          Int           @id @default(autoincrement())
-  schoolId    Int
-  name        String
-  school      SchoolModel   @relation(fields: [schoolId], references: [id])
-  LessonModel LessonModel[]
+  id       Int           @id @default(autoincrement())
+  schoolId Int
+  name     String
+  school   SchoolModel   @relation(fields: [schoolId], references: [id])
+  lessons  LessonModel[]
 }
 
 model LessonModel {
   id        Int        @id @default(autoincrement())
   groupId   Int
-  name      String
   dayOfWeek Int
   startTime String
   endTime   String
