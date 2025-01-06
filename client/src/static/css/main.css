@@ -6,7 +6,7 @@
     box-sizing: border-box;
 }
 body {
-    min-width: 480px;
+    min-width: 420px;
     background-color: #F5F8FF;
     height: 100vh;
 }
