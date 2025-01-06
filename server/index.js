@@ -13,6 +13,7 @@ import { createTask, getAllTasks, deleteTask } from './controllers/TaskControlle
 import { createScript, createSubTab, createTab, deleteScript, deleteSubTab, deleteTab, getAllScripts, getAllTabs, getScripts } from './controllers/ScriptController.js';
 import { getAllSchools, getAllGroups, getAllLessons, getSchoolById, getGroupById } from './controllers/SchoolController.js';
 import { addSchool, addGroup, addLesson, deleteSchool, deleteGroup, deleteLesson } from './controllers/SchoolController.js';
+import { createUser, deleteUser, getAllUsers } from './controllers/UserController.js';
 
 
 
@@ -50,6 +51,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+
+// ======================= User ========================
+app.get('/auth', getAllUsers)
+app.post('/auth', createUser)
+app.delete('/auth',deleteUser)
 
 
 // ======================= TASKS ========================
