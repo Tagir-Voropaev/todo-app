@@ -13,6 +13,7 @@ import { createTask, getAllTasks, deleteTask } from './controllers/TaskControlle
 import { createScript, createSubTab, createTab, deleteScript, deleteSubTab, deleteTab, getAllScripts, getAllTabs, getScripts } from './controllers/ScriptController.js';
 import { getAllSchools, getAllGroups, getAllLessons, getSchoolById, getGroupById } from './controllers/SchoolController.js';
 import { addSchool, addGroup, addLesson, deleteSchool, deleteGroup, deleteLesson } from './controllers/SchoolController.js';
+import { createUser, deleteUser, getAllUsers } from './controllers/UserController.js';
 
 
 
@@ -51,6 +52,11 @@ app.use(express.json());
 app.use(cors());
 
 
+// ======================= User ========================
+app.get('/auth', getAllUsers)
+app.post('/auth', createUser)
+app.delete('/auth',deleteUser)
+
 
 // ======================= TASKS ========================
 app.get('/tasks', getAllTasks)
@@ -88,6 +94,6 @@ app.delete('/lessons', deleteLesson)
 
 //Запуск сервера
 app.listen(PORT, '127.0.0.1', () => {
-    console.log(`Server OK ${PORT}`)
+    console.log(`Server OK Тимерхан ${PORT}`)
 })
 

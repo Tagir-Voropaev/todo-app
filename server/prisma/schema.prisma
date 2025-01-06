@@ -12,6 +12,8 @@ model TaskModel {
   title    String
   timetask String
   datetask String
+  userId   Int
+  User     User   @relation(fields: [userId], references: [id])
 }
 
 model TabModel {
@@ -57,4 +59,13 @@ model LessonModel {
   endTime   String
   room      String
   group     GroupModel @relation(fields: [groupId], references: [id])
+}
+
+model User {
+  id       Int         @id @default(autoincrement())
+  name     String      @unique // Ввод имени 
+  password String // Ввод пароля
+  email    String      @unique // Ввод почты
+  tasks    TaskModel[]
+  
 }
