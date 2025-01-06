@@ -6,24 +6,24 @@
     flex-direction: column;
     justify-content: start;
     align-items: center;
+    overflow: hidden;
     height: calc(100vh - 120px);
     width: 100%;
     max-width: 250px;
     gap: 15px;
     background-color: c.$red;
-    padding: 0 20px;
+    padding: 10px 20px;
+    padding-right: 10px;
     margin-top: 40px;
     border-radius: 0 10px 10px 0;
     -webkit-box-shadow: 6px 0px 8px 0px rgba(34, 60, 80, 0.2);
     -moz-box-shadow: 6px 0px 8px 0px rgba(34, 60, 80, 0.2);
     box-shadow: 6px 0px 8px 0px rgba(34, 60, 80, 0.2);
     .avatar {
+        user-select: none;
         justify-self: center;
         position: relative;
         display: flex;
-        justify-content: center;
-        align-items: center;
-        top: -30px;
         min-width: 60px;
         min-height: 60px;
         width: 60px;
@@ -54,14 +54,26 @@
     }
 
     .navLinks {
+        overflow-y: auto;
         display: flex;
         flex-direction: column;
         justify-content: start;
         align-items: start;
-        gap: 15px;
-        row-gap: 5px;
         width: 100%;
+        gap: 10px;
+        padding-right: 5px;
+        &::-webkit-scrollbar {
+            width: 5px;
+        }
+        &::-webkit-scrollbar-track {
+            background: c.$red;
+        }
+        &::-webkit-scrollbar-thumb {
+            background: c.$white;
+            border-radius: 2px;
+        }
         .navLinkElem{
+            flex-shrink: 0;
             width: 100%;
             height: 40px;
             .navLink {
@@ -69,7 +81,7 @@
                 display: flex;
                 justify-content: start;
                 padding-left: 10px;
-                border-radius: 10px;
+                border-radius: 5px;
                 align-items: center;
                 gap: 30px;
                 width: 100%;
