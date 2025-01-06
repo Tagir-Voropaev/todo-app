@@ -4,6 +4,7 @@ import s from '../static/css/nav.module.scss'
 import defaultAvatar from '../assets/images/avatar.png'
 
 const Header = () => {
+
     return (
         <nav className={s.nav}>
             <Link className={s.avatar} to="/">
@@ -36,6 +37,7 @@ const Header = () => {
                         <p className={s.navLinkText}>Расписание</p>
                     </NavLink>
                 </li>
+               
             </ul>
         </nav>
     )
