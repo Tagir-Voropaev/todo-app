@@ -8,64 +8,71 @@ datasource db {
 }
 
 model TaskModel {
-  id       Int    @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   title    String
   timetask String
   datetask String
   userId   Int
-  User     User   @relation(fields: [userId], references: [id])
+  User     UserModel @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model TabModel {
-  id      Int           @id @default(autoincrement())
-  text    String
-  subtabs SubTabModel[]
-}
-
-model SubTabModel {
-  id      Int           @id @default(autoincrement())
-  text    String
-  tabId   Int
-  scripts ScriptModel[]
-  tab     TabModel      @relation(fields: [tabId], references: [id])
-}
-
-model ScriptModel {
+model UserModel {
   id       Int         @id @default(autoincrement())
-  subtabId Int
-  text     String
-  subtab   SubTabModel @relation(fields: [subtabId], references: [id])
-}
-
-model SchoolModel {
-  id     Int          @id @default(autoincrement())
-  name   String
-  groups GroupModel[]
-}
-
-model GroupModel {
-  id       Int           @id @default(autoincrement())
-  schoolId Int
-  name     String
-  school   SchoolModel   @relation(fields: [schoolId], references: [id])
-  lessons  LessonModel[]
-}
-
-model LessonModel {
-  id        Int        @id @default(autoincrement())
-  groupId   Int
-  dayOfWeek Int
-  startTime String
-  endTime   String
-  room      String
-  group     GroupModel @relation(fields: [groupId], references: [id])
-}
-
-model User {
-  id       Int         @id @default(autoincrement())
+  email    String      @unique // Ввод почты
   name     String      @unique // Ввод имени 
   password String // Ввод пароля
-  email    String      @unique // Ввод почты
+  token    TokenModel?
   tasks    TaskModel[]
-  
 }
+
+model TokenModel {
+  id           Int       @id @default(autoincrement())
+  refreshToken String
+  user         UserModel @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int       @unique
+}
+
+// model TabModel {
+//   id      Int           @id @default(autoincrement())
+//   text    String
+//   subtabs SubTabModel[]
+// }
+
+// model SubTabModel {
+//   id      Int           @id @default(autoincrement())
+//   text    String
+//   tabId   Int
+//   scripts ScriptModel[]
+//   tab     TabModel      @relation(fields: [tabId], references: [id])
+// }
+
+// model ScriptModel {
+//   id       Int         @id @default(autoincrement())
+//   subtabId Int
+//   text     String
+//   subtab   SubTabModel @relation(fields: [subtabId], references: [id])
+// }
+
+// model SchoolModel {
+//   id     Int          @id @default(autoincrement())
+//   name   String
+//   groups GroupModel[]
+// }
+
+// model GroupModel {
+//   id       Int           @id @default(autoincrement())
+//   schoolId Int
+//   name     String
+//   school   SchoolModel   @relation(fields: [schoolId], references: [id])
+//   lessons  LessonModel[]
+// }
+
+// model LessonModel {
+//   id        Int        @id @default(autoincrement())
+//   groupId   Int
+//   dayOfWeek Int
+//   startTime String
+//   endTime   String
+//   room      String
+//   group     GroupModel @relation(fields: [groupId], references: [id])
+// }

@@ -1,19 +1,11 @@
 import express from 'express'
-// import sequelize from './db/database.js'
 import { PrismaClient } from '@prisma/client'
 import cors from 'cors'
 import validationError from './utils/validationError.js';
-import {
-    scriptCreateValidation,
-    tabCreateValidation,
-    taskCreateValidation,
-    schoolCreateValidation,
-} from './validations/validations.js';
+import { taskCreateValidation, } from './validations/validations.js';
 import { createTask, getAllTasks, deleteTask } from './controllers/TaskController.js';
-import { createScript, createSubTab, createTab, deleteScript, deleteSubTab, deleteTab, getAllScripts, getAllTabs, getScripts } from './controllers/ScriptController.js';
-import { getAllSchools, getAllGroups, getAllLessons, getSchoolById, getGroupById } from './controllers/SchoolController.js';
-import { addSchool, addGroup, addLesson, deleteSchool, deleteGroup, deleteLesson } from './controllers/SchoolController.js';
-import { createUser, deleteUser, getAllUsers } from './controllers/UserController.js';
+import { registration, getAllUsers, deleteUser, login, logout } from './controllers/UserController.js';
+import cookieParser from 'cookie-parser';
 
 
 
@@ -25,22 +17,10 @@ const prisma = new PrismaClient();
 try {
     // Установите соединение с базой данных
     await prisma.$connect();
-    console.log('Подключение к базе данных успешно! Тимерхан');
+    console.log('Подключение к базе данных успешно!');
 } catch (error) {
     console.error('Ошибка при подключении к базе данных:', error);
 }
-
-
-// try {
-//     // Dev-mode: пересоздание таблицы при запуске сервера
-//     (async () => { await sequelize.sync({ force: true }) })() 
-//     //Dev-mode: Проверка наличия таблицы при запуске сервера
-//     // (async () => { await sequelize.sync({}) })()
-//     await sequelize.authenticate()
-//     console.log('DB is OK')
-// } catch (e) {
-//     console.log('DB is BAD ', e)
-// }
 
 
 
@@ -49,13 +29,18 @@ const app = express();
 
 //Формат чтения
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors());
 
 
 // ======================= User ========================
-app.get('/auth', getAllUsers)
-app.post('/auth', createUser)
-app.delete('/auth',deleteUser)
+app.post('/registration', registration)
+app.post('/login', login)
+app.post('/logout', logout)
+// app.get('/activate/:link', createUser)
+// app.get('/refresh', createUser)
+app.get('/users', getAllUsers)
+app.delete('/users', deleteUser)
 
 
 // ======================= TASKS ========================
@@ -63,37 +48,11 @@ app.get('/tasks', getAllTasks)
 app.post('/tasks', taskCreateValidation, validationError, createTask)
 app.delete('/tasks', deleteTask)
 
-// ======================= SCRIPTS ========================
-app.get('/scripts/tabs', getAllTabs)
-app.post('/scripts/tabs', tabCreateValidation, validationError, createTab);
-app.delete('/scripts/tabs', deleteTab)
-
-
-app.post('/scripts/subtabs', tabCreateValidation, validationError, createSubTab);
-app.delete('/scripts/subtabs', deleteSubTab)
-
-app.get('/scripts/subtab/', getAllScripts)
-app.get('/scripts/subtab/:id', getScripts)
-app.post('/scripts/subtab/:id', scriptCreateValidation, validationError, createScript);
-app.delete('/scripts/subtab/:id', deleteScript)
-
-// ======================= SCHOOL ========================
-app.get('/schools', getAllSchools)
-app.get('/schools/:id', getSchoolById);
-app.get('/groups', getAllGroups)
-app.get('/groups/:id', getGroupById)
-app.get('/lessons', getAllLessons)
-app.post('/schools', schoolCreateValidation, validationError, addSchool)
-app.post('/groups', schoolCreateValidation, validationError, addGroup)
-app.post('/lessons', validationError, addLesson)
-app.delete('/schools', deleteSchool)
-app.delete('/groups', deleteGroup)
-app.delete('/lessons', deleteLesson)
 
 
 
 //Запуск сервера
 app.listen(PORT, '127.0.0.1', () => {
-    console.log(`Server OK Тимерхан ${PORT}`)
+    console.log(`Server OK ${PORT}`)
 })
 
