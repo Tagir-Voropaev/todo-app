@@ -13,7 +13,7 @@
   grid-template-areas:
     "header header"
     "nav content";
-  gap: 0 10px;
+  gap: 40px;
 }
 .header{
   grid-area: header;
@@ -24,8 +24,8 @@
 .content {
   grid-area: content;
   flex: 1;
-  padding: 20px;
-  overflow: hidden;
+  padding-bottom: 20px;
+  padding-right: 20px;
 }
 .window-block{
   padding: 0 20px;
