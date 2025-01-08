@@ -1,3 +1,133 @@
-.tasks{
+@use '../../colors.scss' as c;
+
+.tasks {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    box-shadow: 0px 5px 15px 10px c.$gray-1-shadow;
+
+    .categories {
+        padding: 0 10px;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 3fr 1fr;
+        gap: 10px;
+        grid-template-areas: 'pass categories settings';
+        height: 50px;
+        align-items: center;
+
+        .categoriesListMobile {
+            cursor: pointer;
+            user-select: none;
+            border-radius: 5px;
+            border: 1px solid c.$gray-1;
+            color: c.$black-1ul;
+            background-color: c.$white-o20;
+            outline: none;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            grid-area: categories;
+        }
+
+        .categoriesList {
+            border-radius: 5px;
+            height: 35px;
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            gap: 15px;
+            grid-area: categories;
+
+            .categoryItem {
+                transition: all 0.3s ease;
+                outline: none;
+                border: 2px solid #ffffff00;
+                background-color: c.$white-o20;
+                cursor: pointer;
+                user-select: none;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: c.$black-1ul;
+                &:hover {
+                    border-bottom: 2px solid c.$gray-1;
+                }
+                &.activeCategory{
+                    border-bottom: 2px solid c.$red;
+                }
+                p {
+                    text-align: center;
+                    width: 90px;
+                    word-wrap: none;
+                    white-space: nowrap;
+                    font-size: 0.7rem;
+                }
+            }
+        }
+
+        .settings {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            grid-area: settings;
+
+            .settingsButton {
+                cursor: pointer;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: none;
+                outline: none;
+                background-color: c.$red;
+                width: 30px;
+                height: 30px;
+                border-radius: 5px;
+                color: c.$white;
+
+                .settingsIcon::before {
+                    width: 100%;
+                    height: 100%;
+                }
+                &:hover {
+                    background-color: c.$red-hover;
+                }
+                &:active {
+                    background-color: c.$red-active;
+                }
+            }
+        }
+    }
     
+}
+
+@media (max-width: 1024px) {
+    .tasks {
+        .categories {
+            .categoriesList {
+                .categoryItem {
+                    p {
+                        width: 60px;
+                        font-size: 0.6rem;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .tasks {
+        .categories {
+            .categoriesListMobile {
+                display: flex;
+            }
+
+            .categoriesList {
+                display: none;
+            }
+        }
+
+    }
 }
