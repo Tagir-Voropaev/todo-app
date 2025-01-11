@@ -42,7 +42,7 @@ const App = () => {
 
     return (
 
-        <div className={s.App}>
+        <div className={isAuthenticated ? s.App : s.authenticated}>
             {/* Если пользователь не авторизован, перенаправляем на страницу авторизации */}
             {!isAuthenticated &&
                 (
