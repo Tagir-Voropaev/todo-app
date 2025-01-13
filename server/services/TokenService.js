@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 export const generateToken = (payload) => {
     const accessToken = jwt.sign(payload, 'secret111', { expiresIn: '1h' });
     const refreshToken = jwt.sign(payload, 'secret111', { expiresIn: '30d' });
-    
     return { accessToken, refreshToken }
 };
 export const saveToken = async (userId, refreshToken) => {

@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { createUser } from "../services/UserService.js";
+import { createUser, loginUser } from "../services/UserService.js";
 import bcrypt from 'bcrypt'
 
 const prisma = new PrismaClient();
@@ -28,15 +28,19 @@ export const registration = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        const { email, name, password } = req.body;
-        const userData = await prisma.userModel.findFirst({ where: { OR: [{ email: email }, { name: name }] } });
-        //обработка ошибки при создании пользователя
-        if (!userData) return res.status(404).json({ message: 'Пользователь не найден' });
-        const validPassword = await bcrypt.compare(password, userData.password);
-        if (!validPassword) return res.status(400).json({ message: 'Неверный пароль' });
-
-        res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
-        return res.json(userData);
+        console.log("ЗАПРОС")
+        const { login, password } = req.body;
+        const user = await loginUser(login, password);
+        if(!user) {
+            return res.status(404).json({ message: 'Неверный логин или пароль' });
+        }
+        
+        
+        res.cookie('refreshToken', user.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+        return res.status(200).json({
+            userData: user,
+            message: 'Авторизация успешна'
+        });
 
     }
     catch (error) {

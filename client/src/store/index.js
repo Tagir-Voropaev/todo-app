@@ -16,7 +16,7 @@ import createSchoolSlice from './timetable/createSchoolSlice'
 import createGroupSlice from './timetable/createGroupSlice'
 import allLessonsSlice from './timetable/allLessonsSlice'
 import createLessonSlice from './timetable/createLessonSlice'
-
+import loginUserSlice from './users/loginSlice'
 
 const index = configureStore({
     reducer: {
@@ -37,6 +37,7 @@ const index = configureStore({
         createGroup: createGroupSlice,
         allLessons: allLessonsSlice,
         createLesson: createLessonSlice,
+        loginUser: loginUserSlice
     }
 })
 

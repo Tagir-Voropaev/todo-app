@@ -11,7 +11,7 @@ export const createUser = async (email, name, password) => {
         const users = await prisma.userModel.findMany({ where: { OR: [{ email: email }, { name: name }] } });
         // Если пользователь с таким email/именем уже существует
         if (users.length > 0) {
-            throw  new  Error('Email или имя пользователя уже заняты.')  // Выбрасываем исключение с сообщением об ошибке)
+            throw new Error('Email или имя пользователя уже заняты.')  // Выбрасываем исключение с сообщением об ошибке)
         }
 
         // хешируем пароль
@@ -27,9 +27,36 @@ export const createUser = async (email, name, password) => {
         });
 
         // Отправка email с подтверждением регистрации
-        const tokens = generateToken({ id: user.id, email: user.email, name: user.name  });
+        const tokens = generateToken({ id: user.id, email: user.email, name: user.name });
         await saveToken(user.id, tokens.refreshToken);
+        return {
+            ...tokens,
+            user: {
+                id: user.id,
+                email: user.email,
+                name: user.name
+            },
+        };
+    } catch (error) {
+        console.error(error);
+    }
+};
 
+export const loginUser = async (login, password) => {
+    try {
+        const user = await prisma.userModel.findFirst({ where: { OR: [{ email: login }, { name: login }] } });
+        if (!user) {
+            return null
+        }
+
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            return null
+        }
+
+
+        const tokens = generateToken({ id: user.id, email: user.email, name: user.name });
+        await saveToken(user.id, tokens.refreshToken);
         return {
             ...tokens,
             user: {
