@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 
 
 const Login = () => {
-    const [notification, setNotification] = useState('')
+    const [notification, setNotification] = useState()
     const { register, handleSubmit, formState: { errors } } = useForm();
     // console.log(errors);
 
@@ -18,15 +18,16 @@ const Login = () => {
     const { data, status, error } = useSelector(state => state.loginUser);
     useEffect(() => {
         console.log(data);
-        if (error) {
-            setNotification(data.message)
+        if (data && data.message) {
+            setNotification(data.message);
         }
-    }, [data, status, error]);
-
+    }, [data]);
 
 
     const onSubmit = async (values) => {
         await dispatch(fetchLoginUser(values))
+        setLogin('');
+        setPassword('');
     }
 
     return (
