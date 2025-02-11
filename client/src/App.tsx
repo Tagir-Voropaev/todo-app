@@ -4,7 +4,7 @@ import Auth from './components/auth/Auth'
 import Home from './components/home/Home'
 
 function App() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [isAuthenticated, setIsAuthenticated] = useState(true)
     return (
         <div className={s.app}>
             {isAuthenticated ? <Home /> : <Auth />}
