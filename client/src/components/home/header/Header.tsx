@@ -4,16 +4,19 @@ const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     return (
         <div className={s.header}>
-            <div className={s.profile} onClick={() => setIsMenuOpen(!isMenuOpen)} >
-                <div className={s.profileName}>Имя Фамилия</div>
-                <div className={s.profileImage}></div>
-            </div>
-            <div className={`${s.profileMenu} ${isMenuOpen ? s.profileMenuOpen : ''}`}>
-                <ul>
-                    <li>Задачи</li>
-                    <li>Контакты</li>
-                    <li>Настройки</li>
-                    <li>Выйти</li>
+            <div className={s.profile} >
+                <div className={`${s.profileButton} ${isMenuOpen ? s.profileButtonActive : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)} >
+                    <div className={s.profilePerson}>
+                        <div className={s.profileName}>Тагир</div>
+                        <div className={s.profileStatus}>Администратор</div>
+                    </div>
+                    <div className={s.profileImage}></div>
+                </div>
+                <ul className={`${s.profileMenu} ${isMenuOpen ? s.profileMenuOpen : ''}`}>
+                    <li className={s.profileMenuItem}>Задачи</li>
+                    <li className={s.profileMenuItem}>Контакты</li>
+                    <li className={s.profileMenuItem}>Настройки</li>
+                    <li className={s.profileMenuItem}>Выйти</li>
                 </ul>
             </div>
         </div>

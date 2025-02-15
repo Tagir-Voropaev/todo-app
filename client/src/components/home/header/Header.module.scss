@@ -1,52 +1,98 @@
 .header {
     position: relative;
-    height: 50px;
     width: 100%;
     display: flex;
     justify-content: flex-end;
     padding: 10px 10px;
+
     .profile {
-        transition: all 0.3s ease;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border: 2px solid #c9c9c9;
-        gap: 20px;
-        padding: 30px;
-        border-radius: 30px;
-        box-sizing: border-box;
-        &:hover{
-            border: 2px solid #8443D6;
-            
-        }
-        .profileName{
+        .profileButton {
+            width: 230px;
+            box-sizing: border-box;
+            position: relative;
             transition: all 0.3s ease;
-            color: #8443D6;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: 2px solid #c9c9c9;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 30px;
+
+            &:hover {
+                border: 2px solid #8443D6;
+            }
+
+            .profilePerson {
+                .profileStatus{
+                    transition: all 0.3s ease;
+                    color: #8443D6;
+                }
+                .profileName{
+                    text-align: center;
+                    transition: all 0.3s ease;
+                    color: #8443D6;
+                }
+            }
+
+            .profileImage {
+                background-color: #8443D6;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                overflow: hidden;
+            }
         }
-        .profileImage {
-            background-color: #8443D6;
-            width: 39px;
-            height: 39px;
-            border-radius: 50%;
+
+        .profileButtonActive {
+            border: 2px solid #8443D6;
+            color: #fff;
+
+        }
+
+        .profileMenu {
+            background-color: #f8f8f8;
+            position: absolute;
+            top: 78px;
+            transition: all 0.5s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-direction: column;
+            height: 0;
+            width: 230px;
             overflow: hidden;
+            gap: 10px;
+            border: 2px solid #8443D600;
+
+            .profileMenuItem {
+                cursor: pointer;
+                width: 90%;
+                padding: 5px;
+                border-radius: 3px;
+                &:hover{
+                    background-color: #cfcfcf;
+                }
+            }
+        }
+
+        .profileMenuOpen {
+            border-radius: 5px;
+            border: 2px solid #c9c9c9;
+
+            &:hover {
+                border: 2px solid #8443D6;
+            }
+
+            transition: all 0.2s ease-in-out;
+            position: absolute;
+            display: flex;
+            height: 160px;
+            flex-direction: column;
+            gap: 6px;
         }
     }
-    .profileMenuOpen{
-        display: flex;
-        height: 300px;
-        flex-direction: column;
-        gap: 10px;
-    }
-    .profileMenu{
-        position: absolute;
-        top: 50px;
-        left: 0;
-        transition: all 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        height: 0;
-        width: 300px;
-        overflow: hidden;
-        gap: 10px;
-    }
+
+
 }

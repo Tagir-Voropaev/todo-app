@@ -1,0 +1,63 @@
+.tasks {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
+    padding: 10px 10px;
+    gap: 10px;
+
+    .sortBlocks{
+        border: 1px solid #c9c9c9;
+        height: 50px;
+        display: grid;
+        align-items: center;
+        grid-template-columns: 5fr 2fr 1fr 1fr 1fr;
+        width: 100%;
+        text-align: center;
+        .sortButton{
+            user-select: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 2px 5px;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.1s ease;
+            &:not(:first-child){
+                border-left: 1px solid #bfbfbf;
+            }
+            &:hover{
+                background-color: #cfcfcf;
+            }
+            &:active{
+                background-color: #a9a9a9;
+            }
+        }
+    }
+    .tasksBlock {
+        width: 100%;
+        border-radius: 6px;
+        border: 1px solid #c9c9c9;
+        .tasksItem {
+            display: grid;
+            grid-template-columns: 5fr 2fr 1fr 1fr 1fr;
+            align-items: center;
+            width: 100%;
+            height: 50px;
+            border-radius: 5px;
+            text-align: center;
+            &:not(:first-child){
+                border-top: 1px solid #c9c9c9;
+            }
+            &:hover{
+                background-color: #cfcfcf;
+            }
+            .taskTitle{
+                text-align: start;
+            }
+        }
+    }
+}
