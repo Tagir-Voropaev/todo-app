@@ -9,11 +9,8 @@ const Login = () => {
             <button className={s.authButton}>Войти</button>
             <div className={s.authLinkBlock}>
                 <a className={s.authLink} href="#">Забыли пароль?</a>
-                <a className={s.authLink} href="#">Регистрация</a>
             </div>
             <div className={s.authSocial}>
-                <a className={s.authLink} href="#"><i className="fa-brands fa-facebook"></i> Facebook</a>
-                <a className={s.authLink} href="#"><i className="fa-brands fa-google"></i> Google</a>
             </div>
         </div>
     )

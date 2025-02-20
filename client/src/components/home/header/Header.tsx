@@ -14,6 +14,8 @@ const Header = () => {
                 </div>
                 <ul className={`${s.profileMenu} ${isMenuOpen ? s.profileMenuOpen : ''}`}>
                     <li className={s.profileMenuItem}>Задачи</li>
+                    <li className={s.profileMenuItem}>Заведения</li>
+                    <li className={s.profileMenuItem}>База знаний</li>
                     <li className={s.profileMenuItem}>Контакты</li>
                     <li className={s.profileMenuItem}>Настройки</li>
                     <li className={s.profileMenuItem}>Выйти</li>
