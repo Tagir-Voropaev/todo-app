@@ -1,7 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import s from './Auth.module.scss'
 import Login from './Login'
+import axios from 'axios';
+
 const Auth = () => {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    // Добавляем токен в заголовок запроса
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+   
     return (
         <div className={s.auth} >
             <div className={s.authBlock}>

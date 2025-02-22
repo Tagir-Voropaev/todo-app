@@ -1,38 +1,89 @@
-import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from './store'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-// Define a type for the slice state
-interface CounterState {
-  value: number
+// Типы для данных запроса
+interface LoginCredentials {
+  login: string;
+  password: string;
 }
 
-// Define the initial state using that type
-const initialState: CounterState = {
-  value: 0,
+// Типы для ответа сервера
+interface UserData {
+  id: string;
+  name: string;
+  token: string;
+  isAuth: boolean;
 }
 
-export const counterSlice = createSlice({
-  name: 'counter',
-  // `createSlice` will infer the state type from the `initialState` argument
+// Типы для состояния аутентификации
+interface AuthState {
+  user: UserData | null;
+  loading: boolean;
+  error: string | null;
+}
+
+// Начальное состояние
+const initialState: AuthState = {
+  user: null,
+  loading: false,
+  error: null,
+};
+
+// Асинхронный Thunk для выполнения POST-запроса
+export const loginUser = createAsyncThunk<
+  UserData, // Тип возвращаемого значения
+  LoginCredentials, // Тип аргументов
+  { rejectValue: string } // Тип ошибки
+>(
+  'auth/loginUser',
+  async ({ login, password }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post<UserData>('http://localhost:5000/api/login', {
+        login,
+        password,
+      });
+      return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        return rejectWithValue(error.response.data.message || 'Ошибка при входе');
+      }
+      return rejectWithValue('Ошибка сети');
+    }
+  }
+);
+
+// Создаем слайс
+const authSlice = createSlice({
+  name: 'auth',
   initialState,
   reducers: {
-    increment: (state) => {
-      state.value += 1
-    },
-    decrement: (state) => {
-      state.value -= 1
-    },
-    // Use the PayloadAction type to declare the contents of `action.payload`
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload
+    // Дополнительные синхронные редьюсеры, если нужно
+    logoutUser(state) {
+      state.user = null;
+      state.error = null;
     },
   },
-})
+  extraReducers: (builder) => {
+    builder
+      // Обработка состояния "загрузка"
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      // Обработка успешного завершения
+      .addCase(loginUser.fulfilled, (state, action: PayloadAction<UserData>) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
 
-export const { increment, decrement, incrementByAmount } = counterSlice.actions
+      // Обработка ошибки
+      .addCase(loginUser.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.loading = false;
+        state.error = action.payload || 'Неизвестная ошибка';
+      });
+  },
+});
 
-// Other code such as selectors can use the imported `RootState` type
-export const selectCount = (state: RootState) => state.counter.value
-
-export default counterSlice.reducer
+// Экспортируем экшены и редьюсер
+export const { logoutUser } = authSlice.actions;
+export default authSlice.reducer;

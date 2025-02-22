@@ -5,14 +5,14 @@ import Auth from './components/auth/Auth';
 import Home from './components/home/Home';
 
 function App() {
-    const [isAuthenticated, setIsAuthenticated] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     return (
         <Router>
             <div className={s.app}>
                 <Routes>
-                    <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/auth" />} />
-                    <Route path="auth" element={isAuthenticated ? <Navigate to="/" /> : <Auth />} />
+                    <Route path="/" element={<Home />} />
+                    <Route path="auth" element={<Auth />} />
                 </Routes>
             </div>
         </Router>
