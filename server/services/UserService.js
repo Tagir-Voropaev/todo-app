@@ -26,12 +26,7 @@ export const createUser = async (email, name, password) => {
             }
         });
 
-        // Отправка email с подтверждением регистрации
-        const tokens = generateToken({ id: user.id, email: user.email, name: user.name  });
-        await saveToken(user.id, tokens.refreshToken);
-
         return {
-            ...tokens,
             user: {
                 id: user.id,
                 email: user.email,

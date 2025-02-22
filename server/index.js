@@ -1,13 +1,10 @@
 import express from 'express'
 import { PrismaClient } from '@prisma/client'
 import cors from 'cors'
-import validationError from './utils/validationError.js';
-import { taskCreateValidation, } from './validations/validations.js';
-import { createTask, getAllTasks, deleteTask } from './controllers/TaskController.js';
 import { registration, getAllUsers, deleteUser, login, logout } from './controllers/UserController.js';
-import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
 
-
+dotenv.config();
 
 const PORT = 5000; // В production используем случайный порт
 
@@ -29,24 +26,21 @@ const app = express();
 
 //Формат чтения
 app.use(express.json());
-app.use(cookieParser());
 app.use(cors());
 
 
 // ======================= User ========================
-app.post('/registration', registration)
-app.post('/login', login)
-app.post('/logout', logout)
+app.post('/api/registration', registration)
+app.post('/api/login', login)
+app.post('/api/logout', logout)
 // app.get('/activate/:link', createUser)
 // app.get('/refresh', createUser)
-app.get('/users', getAllUsers)
-app.delete('/users', deleteUser)
+app.get('/api/users', getAllUsers)
+app.delete('/api/users', deleteUser)
 
 
 // ======================= TASKS ========================
-app.get('/tasks', getAllTasks)
-app.post('/tasks', taskCreateValidation, validationError, createTask)
-app.delete('/tasks', deleteTask)
+
 
 
 
