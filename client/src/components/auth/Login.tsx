@@ -7,6 +7,9 @@ import { RootState } from '../../store/store';
 import { AppDispatch } from '../../store/store';
 import { useNavigate } from 'react-router-dom';
 
+
+
+
 const Login = () => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
@@ -14,47 +17,22 @@ const Login = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-
-    // Добавляем токен в заголовок запроса
-    if (token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-
     useEffect(() => {
-        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-        if (token && !user) {
-          // Если токен есть, но пользователь не авторизован в Redux,
-          // можно отправить запрос на сервер для проверки токена и получения данных пользователя
-         
-          axios
-          .get('http://localhost:5000/api/login', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((response) => {
-            const userData = response.data;
-            dispatch(loginUser(userData));
-          })
-          .catch(() => {
-            // Если токен недействителен, очищаем его
-            localStorage.removeItem('token');
-            sessionStorage.removeItem('token');
-          });
+        if (user) {
+            navigate('/'); // Перенаправляем на главную страницу, если пользователь авторизован
         }
-      }, [dispatch]);
+    }, [user, navigate]);
 
 
     const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault(); // Предотвращаем перезагрузку страницы
+        e.preventDefault();
         try {
-            // Дожидаемся завершения асинхронного действия
             const resultAction = await dispatch(loginUser({ login, password }));
-
-            // Проверяем, успешно ли завершилось действие
+            console.log(resultAction);
             if (loginUser.fulfilled.match(resultAction)) {
-                navigate('/'); // Переходим на главную страницу только после успешной авторизации
+                localStorage.setItem('token', resultAction.payload.token);
+                axios.defaults.headers.common['Authorization'] = `Bearer ${resultAction.payload.token}`;
+                navigate('/');
             } else {
                 console.error('Ошибка авторизации:', resultAction.payload);
             }
@@ -75,7 +53,7 @@ const Login = () => {
             <input
                 onChange={(e) => setPassword(e.target.value)}
                 className={s.authInput}
-                type="current-password"
+                type="password"
                 placeholder="Пароль"
             />
             <button type="submit" className={s.authButton}>
