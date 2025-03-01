@@ -1,20 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode'; // Установите библиотеку для декодирования JWT
-
-// Типы для данных запроса
-interface LoginCredentials {
-  login: string;
-  password: string;
-}
-
-// Типы для ответа сервера
+import { jwtDecode } from 'jwt-decode'; // Для декодирования JWT токена
+import api from './api';
+// Типы для данных пользователя
 interface UserData {
   id: string;
   name: string;
+  email: string;
+  role: string;
   token: string;
   isAuth: boolean;
-  role: string;
 }
 
 // Типы для состояния аутентификации
@@ -31,55 +26,44 @@ const initialState: AuthState = {
   error: null,
 };
 
-// Асинхронный Thunk для выполнения POST-запроса
-export const loginUser = createAsyncThunk<
-  UserData,
-  LoginCredentials,
-  { rejectValue: string }
->(
+// Асинхронный Thunk для входа пользователя
+export const loginUser = createAsyncThunk(
   'auth/loginUser',
-  async ({ login, password }, { rejectWithValue }) => {
+  async (credentials: { login: string; password: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.post<UserData>('http://localhost:5000/api/login', {
-        login,
-        password,
-      });
+      const response = await api.post('/auth/login', credentials); // Используем api вместо axios
+      console.log(response)
       return response.data;
     } catch (error: any) {
-      if (error.response) {
-        return rejectWithValue(error.response.data.message || 'Ошибка при входе');
-      }
-      return rejectWithValue('Ошибка сети');
+      return rejectWithValue(error.response.data.message || 'Ошибка авторизации');
     }
   }
 );
 
-// Восстановление состояния авторизации
-export const restoreAuth = createAsyncThunk<UserData, void, { rejectValue: string }>(
-  'auth/restoreAuth',
+// Асинхронный Thunk для проверки авторизации
+export const checkAuth = createAsyncThunk(
+  'auth/checkAuth',
   async (_, { rejectWithValue }) => {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      return rejectWithValue('Токен отсутствует');
-    }
-
     try {
-      // Декодируем токен, чтобы получить данные пользователя
-      const decoded = jwtDecode(token) as { id: string; role: string };
-
-      // Проверяем токен на сервере (опционально)
-      const response = await axios.get<UserData>('http://localhost:5000/api/checkauth', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const response = await api.get('/auth/check'); // Используем api вместо axios
       return response.data;
     } catch (error: any) {
-      localStorage.removeItem('token'); // Удаляем недействительный токен
-      return rejectWithValue('Недействительный токен');
+      return rejectWithValue(error.response.data.message || 'Ошибка проверки авторизации');
     }
+  }
+);
+
+
+// Асинхронный Thunk для выхода пользователя
+export const logoutUser = createAsyncThunk(
+  'auth/logoutUser',
+  async (_, { rejectWithValue }) => {
+      try {
+          const response = await api.post('/auth/logout');
+          return response.data;
+      } catch (error: any) {
+          return rejectWithValue(error.response.data.message || 'Ошибка выхода');
+      }
   }
 );
 
@@ -88,14 +72,14 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logoutUser(state) {
-      state.user = null;
+    // Синхронный редьюсер для очистки ошибки
+    clearError(state) {
       state.error = null;
-      localStorage.removeItem('token');
     },
   },
   extraReducers: (builder) => {
     builder
+      // Обработка входа пользователя
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -103,26 +87,47 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<UserData>) => {
         state.loading = false;
         state.user = action.payload;
+        state.user.isAuth = true;
+        localStorage.setItem('token', action.payload.token); // Сохраняем токен в localStorage
       })
-      .addCase(loginUser.rejected, (state, action: PayloadAction<string | undefined>) => {
+      .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Неизвестная ошибка';
+        state.error = action.payload as string;
       })
-      .addCase(restoreAuth.pending, (state) => {
+
+      // Обработка проверки аутентификации
+      .addCase(checkAuth.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(restoreAuth.fulfilled, (state, action: PayloadAction<UserData>) => {
+      .addCase(checkAuth.fulfilled, (state, action: PayloadAction<UserData>) => {
         state.loading = false;
         state.user = action.payload;
+        state.user.isAuth = true;
       })
-      .addCase(restoreAuth.rejected, (state, action: PayloadAction<string | undefined>) => {
+      .addCase(checkAuth.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Ошибка при восстановлении авторизации';
+        state.error = action.payload as string;
+        localStorage.removeItem('token'); // Удаляем токен, если проверка не удалась
+      })
+
+      // Обработка выхода пользователя
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.loading = false;
+        state.user = null;
+        localStorage.removeItem('token'); // Удаляем токен при выходе
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
 // Экспортируем экшены и редьюсер
-export const { logoutUser } = authSlice.actions;
+export const { clearError } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,41 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import s from './Auth.module.scss';
-import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
-import { loginUser } from '../../store/authSlice';
-import { RootState } from '../../store/store';
-import { AppDispatch } from '../../store/store';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-
-
-
+import { AppDispatch } from '../../store/store';
+import { loginUser } from '../../store/authSlice'; // Импортируем action для входа
 
 const Login = () => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const user = useSelector((state: RootState) => state.auth.user);
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (user) {
-            navigate('/'); // Перенаправляем на главную страницу, если пользователь авторизован
-        }
-    }, [user, navigate]);
-
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const resultAction = await dispatch(loginUser({ login, password }));
-            console.log(resultAction);
-            if (loginUser.fulfilled.match(resultAction)) {
-                localStorage.setItem('token', resultAction.payload.token);
-                axios.defaults.headers.common['Authorization'] = `Bearer ${resultAction.payload.token}`;
-                navigate('/');
-            } else {
-                console.error('Ошибка авторизации:', resultAction.payload);
-            }
+            // Вызываем action для входа
+            await dispatch(loginUser({ login, password })).unwrap();
+            console.log("Успешный вход");
+            navigate('/'); // Перенаправляем на главную страницу после успешного входа
         } catch (error) {
             console.error('Ошибка авторизации:', error);
         }
@@ -43,18 +25,21 @@ const Login = () => {
 
     return (
         <form className={s.authFormLogin} onSubmit={handleLogin}>
-            {/* login form */}
             <input
+                id='login'
                 onChange={(e) => setLogin(e.target.value)}
                 className={s.authInput}
                 type="username"
                 placeholder="Логин"
+                value={login}
             />
             <input
+                id='password'
                 onChange={(e) => setPassword(e.target.value)}
                 className={s.authInput}
                 type="password"
                 placeholder="Пароль"
+                value={password}
             />
             <button type="submit" className={s.authButton}>
                 Войти

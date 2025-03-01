@@ -1,59 +1,55 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { logoutUser } from '../../../store/authSlice'; // Импортируем действие
 import s from './Header.module.scss';
-
+import { logoutUser } from '../../../store/authSlice';
+import { AppDispatch } from '../../../store/store';
+// import { Link } from 'react-router-dom';
+import logo from '../../../images/logo.png'
+import headerbg from '../../../images/backgroundheader.jpg'
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
-    const dispatch = useDispatch(); // Получаем dispatch
+    const dispatch = useDispatch<AppDispatch>(); // Получаем dispatch
 
     // Функция для выхода из аккаунта
     const handleLogout = async () => {
         try {
-            // Отправляем запрос на сервер для выхода
-            await axios.post('http://localhost:5000/api/logout', {}, {
-                withCredentials: true, // Отправляем куки с запросом
-            });
-    
-            // Очищаем localStorage и sessionStorage
-            localStorage.removeItem('token');
-            sessionStorage.removeItem('token');
-    
-            // Очищаем состояние пользователя в Redux
-            await dispatch(logoutUser());
-    
-            // Перенаправляем на страницу авторизации
-            navigate('/auth');
+            await dispatch(logoutUser()); // Вызываем action для выхода из аккаунта
+            navigate('/auth'); // Перенаправляем на страницу авторизации после выхода
         } catch (error) {
-            console.error('Ошибка при выходе из аккаунта:', error);
+            console.error('Ошибка выхода из аккаунта:', error);
         }
     };
-    
+
     return (
         <div className={s.header}>
-            <div className={s.profile}>
-                <div
-                    className={`${s.profileButton} ${isMenuOpen ? s.profileButtonActive : ''}`}
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                >
-                    <div className={s.profilePerson}>
-                        <div className={s.profileName}>Тагир</div>
-                        <div className={s.profileStatus}>Администратор</div>
-                    </div>
-                    <div className={s.profileImage}></div>
+            {/* <img className={s.headerBackground} src={headerbg}/> */}
+            <img className={s.headerLogo} src={logo} alt="" />
+            <ul className={s.headerList}>
+                <li className={s.headerItem}>
+                    <p className={s.headerItemLink}>Клубы</p>
+                </li>
+                <li className={s.headerItem}>
+                    <p className={s.headerItemLink}>Акции</p>
+                </li>
+                <li className={s.headerItem}>
+                    <p className={s.headerItemLink}>Цены</p>
+                </li>
+                <span className={s.headerListLine}></span>
+            </ul>
+            <div onClick={() => setIsMenuOpen(!isMenuOpen)} className={s.profilePerson}>
+                <div className={s.profileName}>Тагир</div>
+                <div className={s.profileStatus}>Администратор</div>
+                <div className={`${s.burgerMenu} ${isMenuOpen ? s.burgerMenuOpen : ''}`}>
+                    <div className={s.burgerMenuItem}>Профиль</div>
+                    <div className={s.burgerMenuItem}>Задачи</div>
+                    <div className={s.burgerMenuItem}>Статистика</div>
+                    <div className={s.burgerMenuItem}>Настройки</div>
+                    <div onClick={handleLogout} className={s.burgerMenuItem}>Выйти</div>
                 </div>
-                <ul className={`${s.profileMenu} ${isMenuOpen ? s.profileMenuOpen : ''}`}>
-                    <li className={s.profileMenuItem}>Задачи</li>
-                    <li className={s.profileMenuItem}>Заведения</li>
-                    <li className={s.profileMenuItem}>База знаний</li>
-                    <li className={s.profileMenuItem}>Контакты</li>
-                    <li className={s.profileMenuItem}>Настройки</li>
-                    <li className={s.profileMenuItem} onClick={handleLogout}>Выйти</li>
-                </ul>
             </div>
+
         </div>
     );
 };
