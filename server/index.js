@@ -1,8 +1,10 @@
 import express from 'express'
 import { PrismaClient } from '@prisma/client'
 import cors from 'cors'
-import { registration, getAllUsers, deleteUser, login, logout } from './controllers/UserController.js';
+import { registration, login, logout, checkAuth, deleteUser } from './controllers/UserController.js';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+
 
 dotenv.config();
 
@@ -24,19 +26,25 @@ try {
 //Инициализация сервера
 const app = express();
 
+const corsOptions = {
+    origin: 'http://localhost:3000', // Укажите домен вашего фронтенда
+    credentials: true, // Разрешить отправку учетных данных (куки, токены)
+};
+
 //Формат чтения
+app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 
 // ======================= User ========================
 app.post('/api/registration', registration)
-app.post('/api/login', login)
-app.post('/api/logout', logout)
+app.post('/api/auth/login', login)
+app.post('/api/auth/logout', logout)
+app.get('/api/auth/check', checkAuth)
+app.delete('/api/auth/delete', deleteUser)
 // app.get('/activate/:link', createUser)
 // app.get('/refresh', createUser)
-app.get('/api/users', getAllUsers)
-app.delete('/api/users', deleteUser)
 
 
 // ======================= TASKS ========================
