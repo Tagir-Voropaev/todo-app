@@ -1,9 +1,10 @@
 import express from 'express'
 import { PrismaClient } from '@prisma/client'
 import cors from 'cors'
-import { registration, login, logout, checkAuth, deleteUser } from './controllers/UserController.js';
+import { registration, login, logout, checkAuth, deleteUser, getUserInfo, updateUserRole } from './controllers/UserController.js';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import { createTask, getAllTasks } from './controllers/TaskController.js';
 
 
 dotenv.config();
@@ -38,17 +39,20 @@ app.use(cors(corsOptions));
 
 
 // ======================= User ========================
-app.post('/api/registration', registration)
+app.post('/api/auth/registration', registration)
 app.post('/api/auth/login', login)
 app.post('/api/auth/logout', logout)
 app.get('/api/auth/check', checkAuth)
 app.delete('/api/auth/delete', deleteUser)
+app.get('/api/auth/getuserinfo', getUserInfo)
+app.post('/api/auth/updateuserrole', updateUserRole)
 // app.get('/activate/:link', createUser)
 // app.get('/refresh', createUser)
 
 
 // ======================= TASKS ========================
-
+app.post('/api/tasks/create', createTask)
+app.get('/api/tasks/getall', getAllTasks)
 
 
 
