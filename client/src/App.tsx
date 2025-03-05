@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from './store/store';
 import s from './App.module.scss';
 import Auth from './components/auth/Auth';
 import Home from './components/home/Home';
 import { checkAuth } from './store/authSlice'; // Импортируем action для проверки авторизации
-import Profile from './components/home/profile/profile';
+import Profile from './components/home/profile/Profile';
+import Tasks from './components/home/tasks/Tasks';
 
 function App() {
     const dispatch = useDispatch<AppDispatch>();
@@ -16,7 +17,7 @@ function App() {
     useEffect(() => {
         dispatch(checkAuth());
     }, [dispatch]);
-
+   
     // Если идет загрузка, показываем индикатор загрузки
     if (loading) {
         return <div>Загрузка...</div>;
@@ -32,9 +33,16 @@ function App() {
                         element={user ? <Navigate to="/" /> : <Auth />}
                     />
                     <Route
+                        path="/"
+                        element={<Home />}
+                    />
+                    <Route
                         path="/profile"
                         element={<Profile />}
-
+                    />
+                    <Route
+                        path="/tasks"
+                        element={<Tasks />}
                     />
                         {/* Если пользователь не авторизован, перенаправляем с / на /auth */}
                     <Route

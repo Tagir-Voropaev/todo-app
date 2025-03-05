@@ -1,13 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import s from './Auth.module.scss';
 import Login from './Login';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { useNavigate } from 'react-router-dom';
+import Registration from './Registration';
 
 const Auth = () => {
     const navigate = useNavigate();
     const { user, loading } = useSelector((state: RootState) => state.auth);
+    const [isLeft, setLeft] = useState(true);
+
 
     // Если пользователь авторизован, перенаправляем на главную страницу
     useEffect(() => {
@@ -25,10 +28,16 @@ const Auth = () => {
         <div className={s.auth}>
             <div className={s.authBlock}>
                 <div className={s.authChoise}>
-                    <div draggable="false" className={s.authTitle}>Авторизация</div>
-                    <span className={s.authLine}></span>
+                    <div onClick={() => setLeft(true)} draggable="false" className={s.authTitle}>Авторизация</div>
+                    <div onClick={() => setLeft(false)} draggable="false" className={s.authTitle}>Регистрация</div>
+                    <span className={`${s.authLine} ${isLeft ? s.authLineLeft : s.authLineRight}`}></span>
                 </div>
-                {!user && <Login />} {/* Показываем форму входа только если пользователь не авторизован */}
+                <div className={s.authForms}>
+                    <div className={`${s.authWrapper} ${isLeft ? '' : s.authWrapperRight}`}>
+                        <Login />
+                        <Registration />
+                    </div>
+                </div>
             </div>
         </div>
     );

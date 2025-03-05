@@ -5,8 +5,7 @@ import api from './api';
 // Типы для данных пользователя
 interface UserData {
   id: string;
-  name: string;
-  email: string;
+  login: string;
   role: string;
   token: string;
   isAuth: boolean;
@@ -26,13 +25,25 @@ const initialState: AuthState = {
   error: null,
 };
 
+// Асинхронный Thunk для регистрации пользователя
+export const registerUser = createAsyncThunk(
+  'auth/registerUser',
+  async (credentials: { login: string; password: string }, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/auth/registration', credentials); // Используем api вместо axios
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data.message || 'Ошибка регистрации');
+    }
+  }
+);
+
 // Асинхронный Thunk для входа пользователя
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials: { login: string; password: string }, { rejectWithValue }) => {
     try {
       const response = await api.post('/auth/login', credentials); // Используем api вместо axios
-      console.log(response)
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data.message || 'Ошибка авторизации');
@@ -58,12 +69,12 @@ export const checkAuth = createAsyncThunk(
 export const logoutUser = createAsyncThunk(
   'auth/logoutUser',
   async (_, { rejectWithValue }) => {
-      try {
-          const response = await api.post('/auth/logout');
-          return response.data;
-      } catch (error: any) {
-          return rejectWithValue(error.response.data.message || 'Ошибка выхода');
-      }
+    try {
+      const response = await api.post('/auth/logout');
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data.message || 'Ошибка выхода');
+    }
   }
 );
 
@@ -79,6 +90,21 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Обработка регистрации пользователя
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action: PayloadAction<UserData>) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.user.isAuth = true;
+        localStorage.setItem('token', action.payload.token); // Сохраняем токен в localStorage
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
       // Обработка входа пользователя
       .addCase(loginUser.pending, (state) => {
         state.loading = true;

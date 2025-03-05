@@ -19,31 +19,35 @@
         width: 100%;
         height: 100px;
     }
-
+    .headerLogoLink{
+        width: 70px;
+    }
     .headerLogo {
+        user-select: none;
         transition: all 0.3s ease;
         width: 70px;
         height: 70px;
-        &:hover{
+
+        &:hover {
             transform: scale(1.1);
         }
     }
 
     .headerList {
-        position: relative;
         display: flex;
         justify-content: center;
-        gap: 10px;
         align-items: center;
         transition: color 0.3s ease;
 
         .headerItem {
+            position: relative;
             user-select: none;
             cursor: pointer;
             width: 100px;
             text-align: center;
 
             .headerItemLink {
+                text-align: center;
                 transition: all 0.3s ease;
                 color: #dbdbdb;
 
@@ -51,22 +55,50 @@
                     color: #ffb300;
                 }
             }
+
+            .headerListLine {
+                transition: all 0.3s ease;
+                position: absolute;
+                bottom: -5px;
+                width: 100%;
+                height: 2px;
+                background-color: #ff9100;
+                transition: width 0.3s ease;
+                -webkit-box-shadow: 0px 4px 5px 0px rgba(255, 179, 0, 0.1);
+                -moz-box-shadow: 0px 4px 5px 0px rgba(255, 179, 0, 0.1);
+                box-shadow: 0px 4px 5px 0px rgba(255, 179, 0, 0.1);
+            }
+
+            .headerItemActive1 {
+                transition: all 0.3s ease;
+                left: 0;
+            }
+
+            .headerItemActive2 {
+                transition: all 0.3s ease;
+                left: 100%;
+            }
+
+            .headerItemActive3 {
+                transition: all 0.3s ease;
+                left: 200%;
+            }
+
+            .headerItemActive4 {
+                transition: all 0.3s ease;
+                left: 300%;
+            }
         }
 
-        .headerListLine {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: #ffb300;
-            transition: width 0.3s ease;
-        }
     }
 
     .profilePerson {
         position: relative;
         border: 2px solid #dbdbdb;
+        -webkit-box-shadow: 0px 4px 10px 0px rgba(219, 219, 219, 0.25);
+        -moz-box-shadow: 0px 4px 10px 0px rgba(219, 219, 219, 0.25);
+        box-shadow: 0px 4px 10px 0px rgba(219, 219, 219, 0.25);
+
         border-radius: 30px;
         padding: 5px 20px;
         display: flex;
@@ -74,19 +106,22 @@
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s ease-in-out;
         color: #dbdbdb;
 
         &:hover {
             background-color: #2a2a2a;
             border: 2px solid #2a2a2a;
-
+            -webkit-box-shadow: 0px 4px 10px 0px rgba(42, 42, 42, 0.25);
+            -moz-box-shadow: 0px 4px 10px 0px rgba(42, 42, 42, 0.25);
+            box-shadow: 0px 4px 10px 0px rgba(42, 42, 42, 0.25);
         }
     }
 
     .profileName {
         font-size: 16px;
         user-select: none;
+
         &:hover {
             color: #ffb300;
         }
@@ -95,6 +130,7 @@
     .profileStatus {
         font-size: 12px;
         user-select: none;
+
         &:hover {
             color: #ffb300;
         }
@@ -108,29 +144,70 @@
         background-color: #2a2a2a;
         transition: all 0.3s ease;
         overflow: hidden;
-        display: flex;
+        display: none;
+        opacity: 0;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 0;
         width: 150px;
         gap: 10px;
+        padding: 15px;
+        height: auto;
         position: absolute;
-        transform: translate(-50%, 0);
-        left: 50%;
         top: calc(100% + 10px);
-        .burgerMenuItem{
+       
+
+
+        .burgerMenuItem {
             user-select: none;
             cursor: pointer;
             width: 100%;
             text-align: center;
-            &:hover { 
+            color: #dbdbdb;
+
+            &:hover {
                 color: #ffb300;
             }
+        }
+
+        .burgerMenuItemBalance {
+            font-size: 10px;
+            user-select: none;
         }
     }
 
     .burgerMenuOpen {
-        height: 170px;
+        display: flex;
+        animation: openMenu 0.3s forwards;
+        opacity: 1;
+        transition: all 0.3s ease;
+    }
+    .burgerMenuClose{
+        display: flex;
+        opacity: 0;
+        animation: closeMenu 0.3s forwards;
+        transition: all 0.3s ease;
+    }
+}
+
+
+@keyframes openMenu {
+    0% {
+        opacity: 0;
+        display: flex;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes closeMenu {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        display: none;
     }
 }

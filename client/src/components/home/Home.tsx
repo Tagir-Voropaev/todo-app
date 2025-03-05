@@ -6,7 +6,6 @@ const Home = () => {
     return (
         <div className={s.home}>
             <Header/>
-            <Tasks/>
         </div>
     )
 }

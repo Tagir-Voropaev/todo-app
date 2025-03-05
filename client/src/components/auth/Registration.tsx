@@ -3,30 +3,31 @@ import s from './Auth.module.scss';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { AppDispatch } from '../../store/store';
-import { loginUser } from '../../store/authSlice'; // Импортируем action для входа
+import { registerUser } from '../../store/authSlice'; // Импортируем action для входа
 
 
-const Login = () => {
+
+const Registration = () => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             // Вызываем action для входа
-            await dispatch(loginUser({ login, password })).unwrap();
+            await dispatch(registerUser({ login, password })).unwrap();
             navigate('/'); // Перенаправляем на главную страницу после успешного входа
         } catch (error) {
-            console.error('Ошибка авторизации:', error);
+            console.error('Ошибка регистрации:', error);
         }
     };
 
     return (
-        <form className={s.authFormAuth} onSubmit={handleLogin}>
+        <form className={s.authFormAuth} onSubmit={handleRegister}>
             <input
-                id='login'
+                id='loginRegistration'
                 onChange={(e) => setLogin(e.target.value)}
                 className={s.authInput}
                 type="username"
@@ -34,7 +35,7 @@ const Login = () => {
                 value={login}
             />
             <input
-                id='password'
+                id='passwordRegistration'
                 onChange={(e) => setPassword(e.target.value)}
                 className={s.authInput}
                 type="password"
@@ -42,7 +43,7 @@ const Login = () => {
                 value={password}
             />
             <button type="submit" className={s.authButton}>
-                Войти
+                Зарегистрироваться
             </button>
             <div className={s.authLinkBlock}>
                 <a className={s.authLink} href="#">
@@ -54,4 +55,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Registration;
